@@ -1,0 +1,1 @@
+enum AppButtonStyle { primary, outline, text, danger, success, warning }
