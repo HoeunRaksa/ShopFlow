@@ -12,11 +12,18 @@ final checkoutServiceProvider = Provider<CheckoutService>((ref){
 class CheckoutService {
     final Dio dio;
     CheckoutService(this.dio);
+
     Future<String> checkout(int? locationId, LocationRequest? request) async{
-          final response = await dio.post("/order/create");
+          final response = await dio.post("/order/create",
+            data: request?.toJson(),
+            queryParameters: {
+              'id':locationId
+            }
+          );
           String data = response.data['message'];
           return data;
     }
+
     Future<List<LocationResponse>> getLocation() async{
         final response = await dio.get("/location");
         final List data = response.data['data'];

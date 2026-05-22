@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:newprovider/core/app_style.dart';
 import 'package:newprovider/shared/app_bar_icon_button.dart';
-
 import '../widgets/location_form.dart';
 
 class CheckoutView extends StatelessWidget {

@@ -5,7 +5,6 @@ import '../../../../shared/app_button.dart.dart';
 import '../../../../shared/app_select_field.dart';
 import '../../../../shared/app_text_field.dart';
 import '../../data/model/location_request.dart';
-import '../../data/model/location_response.dart';
 import '../state/checkout_controller_provider.dart';
 
 class LocationForm extends ConsumerStatefulWidget {
@@ -21,8 +20,6 @@ class _LocationFormState extends ConsumerState<LocationForm> {
   final _phoneNumberCtrl = TextEditingController();
   final _deliveryAddressCtrl = TextEditingController();
   final _deliveryNoteCtrl = TextEditingController();
-  String? _selectedCategory;
-  final List<String> _categoryItems = ["Home", "Office", "School"];
 
   @override
   void dispose() {
@@ -41,7 +38,7 @@ class _LocationFormState extends ConsumerState<LocationForm> {
       deliveryAddress: _deliveryAddressCtrl.text.trim(),
       deliveryNote: _deliveryNoteCtrl.text.trim(),
     );
-    print(request);
+  ref.read(checkoutProvider.notifier).checkout(null, request);
   }
 
   @override
@@ -53,7 +50,7 @@ class _LocationFormState extends ConsumerState<LocationForm> {
     final padding = AppStyle.padding(context, w);
     final spacing = AppStyle.cardGap(context, w);
     final isSelected = ref.watch(isSelectedProvider);
-    final locations = ref.watch(checkoutControllerProvider);
+    final locations = ref.watch(getLocationControllerProvider);
     return Form(
       key: _key,
       child: Column(
@@ -72,6 +69,7 @@ class _LocationFormState extends ConsumerState<LocationForm> {
                   label: "New Location",
                   onPressed: () {
                     ref.read(isSelectedProvider.notifier).state = false;
+                    ref.read(selectedLocationIdProvider.notifier).state = null;
                   }
                 ),
                 AppButton(
@@ -228,18 +226,21 @@ class _LocationFormState extends ConsumerState<LocationForm> {
             ),
 
             const SizedBox(height: 24),
+
             const SizedBox(height: 16),
 
             AppButton(
               isFullWidth: true,
               isRounded: true,
-              label: 'Save location',
+              label: 'Checkout',
               prefixIcon: Icon(
                 Icons.check_rounded,
                 size: iconSize,
                 color: theme.colorScheme.onPrimary,
               ),
-              onPressed: _submit,
+              onPressed: (){
+                 ref.read(checkoutProvider.notifier).checkout(ref.read(selectedLocationIdProvider), null);
+              },
             ),
           ],
         ],
