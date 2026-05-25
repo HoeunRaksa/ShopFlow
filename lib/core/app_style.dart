@@ -250,4 +250,17 @@ class AppStyle {
 
     return 0.70;
   }
+
+  static double searchHeaderHeight(
+      BuildContext context,
+      double width,
+      ) {
+    if (width < 600) {
+      return 66;
+    }
+    if (width < 1024) {
+      return 72;
+    }
+    return 64;
+  }
 }

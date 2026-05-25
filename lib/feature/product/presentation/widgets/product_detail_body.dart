@@ -46,8 +46,6 @@ class ProductDetailBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
-
-                  // ── Category chip ──
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
@@ -167,7 +165,7 @@ class ProductDetailBody extends StatelessWidget {
                   // ── Quantity row ──
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

@@ -18,7 +18,7 @@ class ProductDetailImage extends StatelessWidget {
 
     final imageHeight = AppSize.value(
       context,
-      mobile: screenHeight * 0.42,
+      mobile: screenHeight * 0.36,
       tablet: screenHeight * 0.50,
       desktop: screenHeight * 0.55,
     );

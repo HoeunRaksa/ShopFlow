@@ -82,7 +82,7 @@ class _ProductManagementState extends ConsumerState<ProductManagement> {
               }
               return Scaffold(
                 appBar: AppBar(
-                  backgroundColor: theme.appBarTheme.backgroundColor,
+                  backgroundColor: theme.scaffoldBackgroundColor,
                   elevation: 0,
                   iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
                   title: Text(

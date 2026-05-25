@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:newprovider/shared/app_bar_icon_button.dart';
 
 import '../../../user_profile/presentation/state/user_contoller.dart';
 
@@ -24,21 +25,21 @@ class ProductDetailAppBar extends ConsumerWidget
     final user = ref.watch(userControllerProvider).value;
     return productAsync.when(
       loading: () => AppBar(
-        backgroundColor: theme.appBarTheme.backgroundColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         iconTheme: IconThemeData(color: colorScheme.onSurface),
         title: const Text("Loading..."),
       ),
 
       error: (e, _) => AppBar(
-        backgroundColor: theme.appBarTheme.backgroundColor,
+        backgroundColor:theme.scaffoldBackgroundColor,
         elevation: 0,
         iconTheme: IconThemeData(color: colorScheme.onSurface),
         title: const Text("Error"),
       ),
 
       data: (product) => AppBar(
-        backgroundColor: theme.appBarTheme.backgroundColor,
+        backgroundColor:theme.scaffoldBackgroundColor,
         elevation: 0,
         iconTheme: IconThemeData(color: colorScheme.onSurface),
         title: Text(
@@ -49,29 +50,18 @@ class ProductDetailAppBar extends ConsumerWidget
           ),
         ),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 20),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceVariant.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(5),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  context.push('/product-management/$productId');
-                },
-                child: product.userId == user?.id
-                    ? Icon(
-                  Icons.edit_rounded,
-                  size: iconSize,
-                  color: colorScheme.primary,
-                )
-                    : const SizedBox(),
-              ),
-            ),
-          ),
+          product.userId == user?.id
+              ? AppBarIconButton(
+            isBackground: true,
+            icon: Icons.edit_rounded,
+            iconSize: iconSize,
+            onPressed: () {
+              context.push(
+                '/product-management/$productId',
+              );
+            },
+          )
+              : const SizedBox.shrink(),
         ],
       ),
     );

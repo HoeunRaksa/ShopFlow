@@ -22,7 +22,11 @@ class RelatedHomeSearch extends ConsumerWidget {
       slivers: [
         SliverPersistentHeader(
           pinned: true,
-          delegate: SearchBarDelegate(ref: ref, onDismiss: onDismiss),
+          delegate: SearchBarDelegate(
+            ref: ref,
+            onDismiss: onDismiss,
+            height: AppStyle.searchHeaderHeight(context, w),
+          ),
         ),
 
         if (!isSubmit)
@@ -100,21 +104,24 @@ class RelatedHomeSearch extends ConsumerWidget {
 }
 
 class SearchBarDelegate extends SliverPersistentHeaderDelegate {
-  SearchBarDelegate({required this.ref, required this.onDismiss});
+  SearchBarDelegate({
+    required this.ref,
+    required this.onDismiss,
+    required this.height,
+  });
 
   final WidgetRef ref;
   final VoidCallback onDismiss;
+  final double height;
 
   static final _controller = TextEditingController();
   static final _focusNode = FocusNode();
 
-  static const _height = 66.00;
+  @override
+  double get minExtent => height;
 
   @override
-  double get minExtent => _height;
-
-  @override
-  double get maxExtent => _height;
+  double get maxExtent => height;
 
   @override
   Widget build(
@@ -127,14 +134,17 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: Theme.of(context).shadowColor.withOpacity(.06),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 8,
+        ),
         child: SearchField(
           controller: _controller,
           focusNode: _focusNode,
@@ -145,12 +155,13 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
 
             ref.read(searchControllerProvider.notifier).saveSearch(trimmed);
 
-            ref.read(isSubmitControllerProvider.notifier).state =
-                trimmed.trim().isNotEmpty;
+            ref.read(searchTextProvider.notifier).state = trimmed;
+
+            ref.read(isSubmitControllerProvider.notifier).state = true;
 
             ref.read(searchResultControllerProvider.notifier).performSearch(
-              name: value,
-              categoryName: value,
+              name: trimmed,
+              categoryName: trimmed,
             );
 
             _focusNode.unfocus();
@@ -165,10 +176,14 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
           onDismiss: () {
             _controller.clear();
             _focusNode.unfocus();
+
+            ref.read(isSubmitControllerProvider.notifier).state = false;
+            ref.read(searchTextProvider.notifier).state = '';
+
             onDismiss();
           },
-          onChange: (values) {
-            ref.read(searchTextProvider.notifier).state = values.trim();
+          onChange: (value) {
+            ref.read(searchTextProvider.notifier).state = value.trim();
             ref.read(isSubmitControllerProvider.notifier).state = false;
           },
         ),
@@ -177,5 +192,7 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(covariant SearchBarDelegate old) => false;
+  bool shouldRebuild(covariant SearchBarDelegate old) {
+    return old.height != height;
+  }
 }

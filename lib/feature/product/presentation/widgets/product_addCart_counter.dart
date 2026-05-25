@@ -54,7 +54,7 @@ class _ProductAddCartCounterState extends ConsumerState<ProductAddCartCounter>
       children: [
         // ───────────────── Counter ─────────────────
         Container(
-          height: 48,
+          height: 40,
           decoration: BoxDecoration(
             color: theme.colorScheme.surfaceVariant.withOpacity(0.35),
             borderRadius: BorderRadius.circular(14),
