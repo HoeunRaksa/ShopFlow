@@ -17,33 +17,40 @@ class RelatedHomeSearch extends ConsumerWidget {
     final asyncHistory = ref.watch(searchControllerProvider);
     final searchText = ref.watch(searchTextProvider).toLowerCase();
     final isSubmit = ref.watch(isSubmitControllerProvider);
+
     return CustomScrollView(
       slivers: [
         SliverPersistentHeader(
           pinned: true,
           delegate: SearchBarDelegate(ref: ref, onDismiss: onDismiss),
         ),
+
         if (!isSubmit)
           asyncHistory.when(
             data: (histories) {
               final filterHistory = searchText.toLowerCase().isEmpty
                   ? histories
                   : histories
-                        .where(
-                          (item) =>
-                              item.keyword.toLowerCase().startsWith(searchText),
-                        )
-                        .toList();
+                  .where(
+                    (item) =>
+                    item.keyword.toLowerCase().startsWith(searchText),
+              )
+                  .toList();
+
               if (filterHistory.isEmpty) {
-                return SliverFillRemaining(
+                return const SliverFillRemaining(
                   hasScrollBody: false,
-                  child: Center(child: Text('No search history found')),
+                  child: Center(
+                    child: Text('No search history found'),
+                  ),
                 );
               }
+
               return SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) {
+                      (context, index) {
                     final history = filterHistory[index];
+
                     return Material(
                       child: InkWell(
                         onTap: () {
@@ -64,19 +71,29 @@ class RelatedHomeSearch extends ConsumerWidget {
                       ),
                     );
                   },
-                  childCount: filterHistory.isNotEmpty
-                      ? filterHistory.length
-                      : histories.length,
+                  childCount: filterHistory.length,
                 ),
               );
             },
             loading: () => const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator()),
+              hasScrollBody: false,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
             ),
-            error: (e, _) =>
-                SliverFillRemaining(child: Center(child: Text(e.toString()))),
+            error: (e, _) => SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Text(e.toString()),
+              ),
+            ),
           ),
-        if (isSubmit) SearchBody(searchKey: searchText),
+
+        if (isSubmit)
+          SliverFillRemaining(
+            hasScrollBody: true,
+            child: SearchBody(searchKey: searchText),
+          ),
       ],
     );
   }
@@ -91,7 +108,7 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
   static final _controller = TextEditingController();
   static final _focusNode = FocusNode();
 
-  static const _height = 74.00;
+  static const _height = 66.00;
 
   @override
   double get minExtent => _height;
@@ -101,10 +118,10 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
+      BuildContext context,
+      double shrinkOffset,
+      bool overlapsContent,
+      ) {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -117,26 +134,31 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: SearchField(
           controller: _controller,
           focusNode: _focusNode,
           onSubmitted: (value) {
             final trimmed = value.trim();
+
             if (trimmed.isEmpty) return;
+
             ref.read(searchControllerProvider.notifier).saveSearch(trimmed);
-            ref.read(isSubmitControllerProvider.notifier).state = trimmed
-                .trim()
-                .isNotEmpty;
+
+            ref.read(isSubmitControllerProvider.notifier).state =
+                trimmed.trim().isNotEmpty;
+
             ref.read(searchResultControllerProvider.notifier).performSearch(
               name: value,
               categoryName: value,
             );
+
             _focusNode.unfocus();
           },
           onClear: () {
             _controller.clear();
             _focusNode.requestFocus();
+
             ref.read(isSubmitControllerProvider.notifier).state = false;
             ref.read(searchTextProvider.notifier).state = '';
           },

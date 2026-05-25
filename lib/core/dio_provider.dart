@@ -45,7 +45,8 @@ final dioProvider = Provider<Dio>((ref) {
         return handler.next(response);
       },
       onError: (e, handler) async {
-        if (e.response?.statusCode == 401) {
+        final status = e.response?.statusCode;
+        if (status == 401 || status == 403) {
           final refreshToken = await tokenStorage.getRefreshToken();
 
           if (refreshToken == null || refreshToken.isEmpty) {

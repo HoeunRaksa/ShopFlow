@@ -5,8 +5,6 @@ class AppBarIconButton extends StatelessWidget {
   final double iconSize;
   final VoidCallback onPressed;
   final bool badge;
-
-  // ✅ NEW
   final bool isBackground;
 
   const AppBarIconButton({
@@ -23,20 +21,20 @@ class AppBarIconButton extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.all(10),
       child: Material(
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(10),
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(10),
           child: Ink(
-            width: iconSize + 16,
-            height: iconSize + 16,
+            width: iconSize + 20,
+            height: iconSize + 20,
             decoration: BoxDecoration(
               color: isBackground
-                  ? scheme.surfaceVariant.withValues(alpha: 0.5)
+                  ? scheme.primary
                   : Colors.transparent,
-              borderRadius: BorderRadius.circular(999),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Stack(
               alignment: Alignment.center,
@@ -44,7 +42,7 @@ class AppBarIconButton extends StatelessWidget {
                 Icon(
                   icon,
                   size: iconSize,
-                  color: scheme.onSurface,
+                  color: Colors.white,
                 ),
 
                 if (badge)

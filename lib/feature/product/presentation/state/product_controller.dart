@@ -75,7 +75,7 @@ class ProductController extends AsyncNotifier<List<ProductResponse>> {
   Future<void> updateProduct(
       int productId, {
         required ProductRequest request,
-        required File imageFile,
+        required File? imageFile,
       }) async {
     final service = ref.read(productServiceProvider);
     await service.updateProduct(productId, request, imageFile);

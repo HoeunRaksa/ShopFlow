@@ -101,21 +101,13 @@ class _ProfileAvatar extends ConsumerState<ProfileAvatar> {
           ),
         ),
         const SizedBox(height: 12),
-
-        // ── Name ───────────────────────────────────────────────
         Text(
-          user.lastName,
+          "${user.firstName} ${user.lastName}",
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: theme.colorScheme.onSurface,
           ),
-        ),
-        const SizedBox(height: 4),
-        // ── Email ──────────────────────────────────────────────
-        Text(
-          user.email,
-          style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurface),
         ),
       ],
     );

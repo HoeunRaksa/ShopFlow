@@ -24,7 +24,7 @@ class ProfileView extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final w = constraints.maxWidth;
+        final w = AppStyle.screenWidth(context);
         final padding = AppStyle.padding(context, w);
 
         return Scaffold(
@@ -47,12 +47,12 @@ class ProfileView extends StatelessWidget {
                           SizedBox(
                             height: AppStyle.profileAvatarBottomSpace(context, w),
                           ),
-                          _SectionLabel(label: 'Personal info', width: w),
+                          _SectionLabel(label: 'Personal info', width: w * 2),
                           SizedBox(height: AppStyle.profileSectionGap(context, w)),
                           _FieldCard(
                               width: w, child: ProfileInfoCard(user: _user)),
                           SizedBox(height: AppStyle.profileCardGap(context, w)),
-                          _SectionLabel(label: 'Settings', width: w),
+                          _SectionLabel(label: 'Settings', width: w * 2),
                           SizedBox(height: AppStyle.profileSectionGap(context, w)),
                           _FieldCard(
                             width: w,

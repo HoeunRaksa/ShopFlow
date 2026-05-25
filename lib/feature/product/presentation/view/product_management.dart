@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:newprovider/core/app_size.dart';
 import 'package:newprovider/core/app_style.dart';
 import 'package:newprovider/feature/category/presentation/state/category_controller.dart';
 import '../../../../core/utils/helper_image.dart';
@@ -61,14 +60,15 @@ class _ProductManagementState extends ConsumerState<ProductManagement> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth;
-        final double padding = AppStyle.padding(context, w);
 
         if (isEdit) {
-          final productAsync =
-              ref.watch(productDetailProvider(widget.productId!));
+          final productAsync = ref.watch(
+            productDetailProvider(widget.productId!),
+          );
           return productAsync.when(
             loading: () => const Scaffold(
-                body: Center(child: CircularProgressIndicator())),
+              body: Center(child: CircularProgressIndicator()),
+            ),
             error: (e, _) => const Scaffold(body: Center(child: Text("Error"))),
             data: (product) {
               if (!isInitialized) {

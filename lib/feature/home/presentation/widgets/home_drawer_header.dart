@@ -20,6 +20,7 @@ class HomeDrawerHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userAsync = ref.watch(userControllerProvider);
+    final theme = Theme.of(context);
 
     return userAsync.when(
       data: (user) {
@@ -31,96 +32,109 @@ class HomeDrawerHeader extends ConsumerWidget {
           width: double.infinity,
           padding: EdgeInsets.all(padding),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                Theme.of(context).colorScheme.secondary,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: theme.colorScheme.surface,
             borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(28),
+              topRight: Radius.circular(32),
               bottomRight: Radius.circular(32),
             ),
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(.12),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: theme.shadowColor.withOpacity(.06),
+                blurRadius: 24,
+                offset: const Offset(0, 12),
+              ),
+            ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              const SizedBox(height: 8),
-              Stack(
-                children: [
-                  Container(
-                    width: iconSize + 28,
-                    height: iconSize + 28,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      shape: BoxShape.circle,
-                    ),
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primary.withOpacity(.7),
+                      theme.colorScheme.secondary.withOpacity(.7),
+                    ],
                   ),
-                  Container(
-                    width: iconSize + 44,
-                    height: iconSize + 44,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      shape: BoxShape.circle,
-                    ),
-                    child: CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                      child: ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: imageProvider,
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(strokeWidth: 2),
-                          errorWidget: (context, url, error) =>
-                               Icon(Icons.person, color: Theme.of(context).colorScheme.primary),
-                        ),
+                ),
+                child: CircleAvatar(
+                  radius: 38,
+                  backgroundColor: theme.colorScheme.surface,
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: imageProvider,
+                      width: 72,
+                      height: 72,
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) => const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      errorWidget: (_, __, ___) => Icon(
+                        Icons.person_rounded,
+                        size: 36,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "Welcome Back",
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.85),
-                  fontSize: bodySize - 1,
-                  fontWeight: FontWeight.w400,
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                fullName,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: titleSize + 2,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  "Premium Member",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: bodySize - 3,
-                    fontWeight: FontWeight.w600,
-                  ),
+
+              const SizedBox(width: 14),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Welcome back",
+                      style: TextStyle(
+                        fontSize: bodySize - 2,
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      fullName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurface,
+                        fontSize: titleSize,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -.3,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(99),
+                      ),
+                      child: Text(
+                        user?.role ?? "Free",
+                        style: TextStyle(
+                          color: theme.colorScheme.onPrimaryContainer,
+                          fontSize: bodySize - 3,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

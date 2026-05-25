@@ -80,7 +80,7 @@ class HomeBody extends ConsumerWidget {
                   selectCategory: selectedCategory,
                   onTap: onTap,
                   padding: padding,
-                  height: 64, // ✅ row layout needs less height
+                  height: 64,
                   categories: listOfCategories,
                 ),
               ),
@@ -225,10 +225,12 @@ class _CategoryItemState extends State<_CategoryItem>
   }
 
   void _onTapDown(_) => _controller.forward();
+
   void _onTapUp(_) {
     _controller.reverse();
     widget.onTap();
   }
+
   void _onTapCancel() => _controller.reverse();
 
   @override
@@ -249,32 +251,24 @@ class _CategoryItemState extends State<_CategoryItem>
             curve: Curves.easeInOut,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: active
-                  ? scheme.primary.withOpacity(0.08)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(
-                color: active
-                    ? scheme.primary.withOpacity(0.3)
-                    : Colors.transparent,
-                width: 1.2,
+              border: Border(
+                bottom: BorderSide(
+                  color: active ? scheme.primary : Colors.transparent,
+                  width: 2,
+                ),
               ),
             ),
-            // ✅ ROW: image left, text right
             child: Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _CategoryImage(category: widget.category, active: active),
                 const SizedBox(width: 8),
                 AnimatedDefaultTextStyle(
                   duration: const Duration(milliseconds: 200),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-                    color: active
-                        ? scheme.primary
-                        : scheme.onSurfaceVariant,
+                    color: active ? scheme.primary : scheme.onSurfaceVariant,
                     letterSpacing: 0.1,
                     height: 1.0,
                   ),
@@ -285,57 +279,6 @@ class _CategoryItemState extends State<_CategoryItem>
                   ),
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CategoryImage extends StatelessWidget {
-  final CategoryItem category;
-  final bool active;
-
-  const _CategoryImage({required this.category, required this.active});
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeInOut,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: active
-            ? scheme.primary.withOpacity(0.12)
-            : scheme.surfaceContainerHighest.withOpacity(0.6),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(100),
-        child: category.imageUrl.isEmpty
-            ? SizedBox(
-          width: 32,
-          height: 32,
-          child: Icon(
-            Icons.grid_view_rounded,
-            size: 16,
-            color: active ? scheme.primary : scheme.onSurfaceVariant,
-          ),
-        )
-            : CachedNetworkImage(
-          imageUrl: category.imageUrl,
-          width: 32,
-          height: 32,
-          fit: BoxFit.cover,
-          errorWidget: (_, __, ___) => SizedBox(
-            width: 32,
-            height: 32,
-            child: Icon(
-              Icons.image_not_supported_outlined,
-              size: 14,
-              color: scheme.onSurfaceVariant,
             ),
           ),
         ),

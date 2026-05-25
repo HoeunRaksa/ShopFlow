@@ -21,70 +21,121 @@ class ProfileRowTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       children: [
-        InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-            child: Row(
-              children: [
-                // ── Icon badge ───────────────────────────────
-                Container(
-                  width: 34,
-                  height: 34,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(icon, size: 17, color: theme.colorScheme.onSurface),
-                ),
-                const SizedBox(width: 14),
-
-                // ── Label + value ────────────────────────────
-                Expanded(
-                  child: onTap != null
-                      ? Text(
-                    value,
-                    style:  TextStyle(
-                      fontSize: 14,
-                      color: theme.colorScheme.onSurface,
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(0),
+            splashColor: colorScheme.primary.withOpacity(0.06),
+            highlightColor: colorScheme.primary.withOpacity(0.04),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              child: Row(
+                children: [
+                  // ── Icon badge ─────────────────────────────────
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  )
-                      : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        value,
-                        style:  TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
+                    child: Icon(
+                      icon,
+                      size: 19,
+                      color: colorScheme.primary,
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 16),
 
-                // ── Trailing ─────────────────────────────────
-                if (trailing != null) trailing!,
-                if (onTap != null && trailing == null)
-                  Icon(Icons.chevron_right_rounded,
-                      size: 18, color: Colors.grey.shade400),
-              ],
+                  // ── Label + value ──────────────────────────────
+                  Expanded(
+                    child: onTap != null
+                        ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          label,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w500,
+                            color: colorScheme.onSurface.withOpacity(0.45),
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          value,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w500,
+                            color: colorScheme.onSurface,
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
+                    )
+                        : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          label,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w500,
+                            color: colorScheme.onSurface.withOpacity(0.45),
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          value,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w500,
+                            color: colorScheme.onSurface,
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ── Trailing ───────────────────────────────────
+                  if (trailing != null)
+                    trailing!
+                  else if (onTap != null)
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: colorScheme.onSurface.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.chevron_right_rounded,
+                        size: 16,
+                        color: colorScheme.onSurface.withOpacity(0.35),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
         if (!isLast)
-          Divider(height: 1, indent: 64, color: Colors.grey.shade100),
+          Padding(
+            padding: const EdgeInsets.only(left: 76),
+            child: Divider(
+              height: 1,
+              thickness: 0.5,
+              color: colorScheme.onSurface.withOpacity(0.08),
+            ),
+          ),
       ],
     );
   }

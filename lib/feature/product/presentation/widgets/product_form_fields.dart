@@ -39,16 +39,17 @@ class ProductFormFields extends StatelessWidget {
       children: [
         Text("Product Name", style: TextStyle(fontSize: fontSize, color: Theme.of(context).colorScheme.onSurface)),
         const SizedBox(height: 8),
-        AppTextField(controller: nameController),
+        AppTextField(controller: nameController, hint: "Enter product name",),
         const SizedBox(height: 16),
         Text("Description", style: TextStyle(fontSize: fontSize, color: Theme.of(context).colorScheme.onSurface)),
         const SizedBox(height: 8),
-        AppTextField(controller: descriptionController, maxLines: 3),
+        AppTextField(controller: descriptionController,hint: "Enter description", maxLines: 3),
         const SizedBox(height: 16),
         Text("Price", style: TextStyle(fontSize: fontSize, color: Theme.of(context).colorScheme.onSurface)),
         const SizedBox(height: 8),
         AppTextField(
           controller: priceController,
+          hint: "Enter price",
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 20),
@@ -57,6 +58,7 @@ class ProductFormFields extends StatelessWidget {
         AppTextField(
           controller: stockController,
           keyboardType: TextInputType.number,
+          hint: "Enter stock",
         ),
         const SizedBox(height: 20),
         AppImagePicker(

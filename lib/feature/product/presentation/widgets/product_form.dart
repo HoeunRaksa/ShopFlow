@@ -119,13 +119,18 @@ class ProductForm extends ConsumerWidget {
     final controller = ref.read(productControllerProvider.notifier);
 
     if (isEdit) {
+      if (productId == null) return;
+
       await controller.updateProduct(
         productId!,
         request: request,
-        imageFile: imageFile!,
+        imageFile: imageFile,
       );
     } else {
-      await controller.createProduct(request: request, imageFile: imageFile!);
+      await controller.createProduct(
+        request: request,
+        imageFile: imageFile!,
+      );
     }
 
     final result = ref.read(productControllerProvider);

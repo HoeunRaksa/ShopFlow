@@ -59,21 +59,16 @@ class _AppTextFieldState extends State<AppTextField> {
   bool _obscure = true;
   bool _isFocused = false;
   late FocusNode _focusNode;
-  static const _errorClr = Color(0xFFA32D2D);
-  static const _radius = BorderRadius.all(Radius.circular(8));
-  static const _iosRadius = BorderRadius.all(Radius.circular(16));
 
-  InputBorder _border(Color color) => OutlineInputBorder(
-    borderRadius: _radius,
-    borderSide: BorderSide(color: color, width: 1.5),
-  );
+  static const _radius = BorderRadius.all(Radius.circular(12));
+  static const _iosRadius = BorderRadius.all(Radius.circular(14));
 
   @override
   void initState() {
     super.initState();
     _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(() {
-      if (widget.iosStyle) setState(() => _isFocused = _focusNode.hasFocus);
+      setState(() => _isFocused = _focusNode.hasFocus);
     });
   }
 
@@ -94,56 +89,157 @@ class _AppTextFieldState extends State<AppTextField> {
   }
 
   Widget _buildDefault(ThemeData theme, ColorScheme colorScheme, Color errorClr) {
-    return TextFormField(
-      controller: widget.controller,
-      focusNode: widget.focusNode,
-      initialValue: widget.initialValue,
-      obscureText: widget.isPassword && _obscure,
-      keyboardType:
-      widget.isPassword ? TextInputType.visiblePassword : widget.keyboardType,
-      textInputAction: widget.textInputAction,
-      inputFormatters: widget.inputFormatters,
-      maxLines: widget.isPassword ? 1 : widget.maxLines,
-      maxLength: widget.maxLength,
-      enabled: widget.isEnabled,
-      readOnly: widget.readOnly,
-      autofocus: widget.autofocus,
-      textCapitalization: widget.textCapitalization,
-      validator: widget.validator,
-      onChanged: widget.onChanged,
-      onFieldSubmitted: widget.onFieldSubmitted,
-      style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
-      decoration: InputDecoration(
-        labelText: widget.label,
-        hintText: widget.hint,
-        helperText: widget.helperText,
-        helperMaxLines: 3,
-        errorMaxLines: 3,
-        counterText: '',
-        prefixIcon: widget.prefixIcon,
-        suffixIcon: widget.isPassword
-            ? IconButton(
-          icon: Icon(
-            _obscure ? Icons.visibility_off : Icons.visibility,
-            size: 18,
-            color: theme.hintColor,
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (widget.label != null) ...[
+          Padding(
+            padding: const EdgeInsets.only(left: 2, bottom: 7),
+            child: Text(
+              widget.label!,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: colorScheme.onSurface.withOpacity(0.6),
+                letterSpacing: 0.1,
+              ),
+            ),
           ),
-          onPressed: () => setState(() => _obscure = !_obscure),
-        )
-            : widget.suffixIcon,
-        contentPadding:
-        const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        filled: !widget.isEnabled,
-        fillColor: theme.disabledColor.withOpacity(0.1),
-        enabledBorder: _border(theme.dividerColor),
-        focusedBorder: _border(colorScheme.primary),
-        errorBorder: _border(errorClr),
-        focusedErrorBorder: _border(errorClr),
-        disabledBorder: _border(theme.disabledColor.withOpacity(0.2)),
-        labelStyle: TextStyle(fontSize: 14, color: colorScheme.onSurface.withOpacity(0.7)),
-        hintStyle: TextStyle(fontSize: 14, color: theme.hintColor),
-        errorStyle: TextStyle(fontSize: 11, color: errorClr),
-      ),
+        ],
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOutCubic,
+          decoration: BoxDecoration(
+            borderRadius: _radius,
+            color: isDark
+                ? Colors.white.withOpacity(_isFocused ? 0.09 : 0.05)
+                : (_isFocused
+                ? colorScheme.primary.withOpacity(0.03)
+                : Colors.black.withOpacity(0.035)),
+            boxShadow: _isFocused
+                ? [
+              BoxShadow(
+                color: colorScheme.primary.withOpacity(0.12),
+                blurRadius: 0,
+                spreadRadius: 1.5,
+              ),
+              BoxShadow(
+                color: colorScheme.primary.withOpacity(0.06),
+                blurRadius: 8,
+                spreadRadius: 0,
+                offset: const Offset(0, 2),
+              ),
+            ]
+                : [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                blurRadius: 4,
+                spreadRadius: 0,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: _radius,
+            child: TextFormField(
+              controller: widget.controller,
+              focusNode: _focusNode,
+              initialValue: widget.initialValue,
+              obscureText: widget.isPassword && _obscure,
+              keyboardType: widget.isPassword
+                  ? TextInputType.visiblePassword
+                  : widget.keyboardType,
+              textInputAction: widget.textInputAction,
+              inputFormatters: widget.inputFormatters,
+              maxLines: widget.isPassword ? 1 : widget.maxLines,
+              maxLength: widget.maxLength,
+              enabled: widget.isEnabled,
+              readOnly: widget.readOnly,
+              autofocus: widget.autofocus,
+              textCapitalization: widget.textCapitalization,
+              validator: widget.validator,
+              onChanged: widget.onChanged,
+              onFieldSubmitted: widget.onFieldSubmitted,
+              style: TextStyle(
+                fontSize: 14.5,
+                fontWeight: FontWeight.w400,
+                color: colorScheme.onSurface,
+                letterSpacing: -0.1,
+              ),
+              decoration: InputDecoration(
+                hintText: widget.hint,
+                helperText: widget.helperText,
+                helperMaxLines: 3,
+                errorMaxLines: 3,
+                counterText: '',
+                prefixIcon: widget.prefixIcon != null
+                    ? IconTheme(
+                  data: IconThemeData(
+                    color: _isFocused
+                        ? colorScheme.primary.withOpacity(0.8)
+                        : theme.hintColor,
+                    size: 18,
+                  ),
+                  child: widget.prefixIcon!,
+                )
+                    : null,
+                suffixIcon: widget.isPassword
+                    ? IconButton(
+                  icon: Icon(
+                    _obscure
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    size: 18,
+                    color: theme.hintColor,
+                  ),
+                  onPressed: () => setState(() => _obscure = !_obscure),
+                )
+                    : widget.suffixIcon,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 14,
+                ),
+                filled: true,
+                fillColor: Colors.transparent,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                errorBorder: OutlineInputBorder(
+                  borderRadius: _radius,
+                  borderSide: BorderSide(
+                    color: colorScheme.error.withOpacity(0.5),
+                    width: 0.8,
+                  ),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: _radius,
+                  borderSide: BorderSide(
+                    color: colorScheme.error,
+                    width: 0.8,
+                  ),
+                ),
+                disabledBorder: InputBorder.none,
+                labelStyle: TextStyle(
+                  fontSize: 14,
+                  color: colorScheme.onSurface.withOpacity(0.5),
+                ),
+                hintStyle: TextStyle(
+                  fontSize: 14,
+                  color: theme.hintColor,
+                  fontWeight: FontWeight.w400,
+                ),
+                errorStyle: TextStyle(
+                  fontSize: 11,
+                  color: colorScheme.error,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -156,46 +252,49 @@ class _AppTextFieldState extends State<AppTextField> {
       children: [
         if (widget.label != null) ...[
           Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 6),
+            padding: const EdgeInsets.only(left: 4, bottom: 7),
             child: Text(
               widget.label!,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
-                color: colorScheme.onSurface.withOpacity(0.7),
+                color: colorScheme.onSurface.withOpacity(0.6),
                 letterSpacing: 0.1,
               ),
             ),
           ),
         ],
         AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 180),
           curve: Curves.easeOutCubic,
           decoration: BoxDecoration(
             borderRadius: _iosRadius,
             color: isDark
-                ? Colors.white.withOpacity(_isFocused ? 0.12 : 0.07)
-                : Colors.black.withOpacity(_isFocused ? 0.04 : 0.02),
-            border: Border.all(
-              color: _isFocused
-                  ? colorScheme.primary
-                  : theme.dividerColor,
-              width: _isFocused ? 1.5 : 1,
-            ),
-            boxShadow: [
+                ? Colors.white.withOpacity(_isFocused ? 0.10 : 0.06)
+                : (_isFocused
+                ? colorScheme.primary.withOpacity(0.03)
+                : Colors.black.withOpacity(0.030)),
+            boxShadow: _isFocused
+                ? [
               BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
-                blurRadius: 20,
-                spreadRadius: -2,
-                offset: const Offset(0, 4),
+                color: colorScheme.primary.withOpacity(0.13),
+                blurRadius: 0,
+                spreadRadius: 1.5,
               ),
-              if (_isFocused)
-                BoxShadow(
-                  color: colorScheme.primary.withOpacity(0.1),
-                  blurRadius: 16,
-                  spreadRadius: -2,
-                  offset: const Offset(0, 2),
-                ),
+              BoxShadow(
+                color: colorScheme.primary.withOpacity(0.07),
+                blurRadius: 10,
+                spreadRadius: 0,
+                offset: const Offset(0, 3),
+              ),
+            ]
+                : [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.22 : 0.06),
+                blurRadius: 6,
+                spreadRadius: 0,
+                offset: const Offset(0, 1),
+              ),
             ],
           ),
           child: ClipRRect(
@@ -234,7 +333,9 @@ class _AppTextFieldState extends State<AppTextField> {
                 prefixIcon: widget.prefixIcon != null
                     ? IconTheme(
                   data: IconThemeData(
-                    color: theme.hintColor,
+                    color: _isFocused
+                        ? colorScheme.primary.withOpacity(0.8)
+                        : theme.hintColor,
                     size: 18,
                   ),
                   child: widget.prefixIcon!,
@@ -243,32 +344,34 @@ class _AppTextFieldState extends State<AppTextField> {
                 suffixIcon: widget.isPassword
                     ? IconButton(
                   icon: Icon(
-                    _obscure ? Icons.visibility_off : Icons.visibility,
+                    _obscure
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
                     size: 18,
                     color: theme.hintColor,
                   ),
-                  onPressed: () =>
-                      setState(() => _obscure = !_obscure),
+                  onPressed: () => setState(() => _obscure = !_obscure),
                 )
                     : widget.suffixIcon,
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 13,
+                  horizontal: 14,
+                  vertical: 14,
                 ),
                 filled: true,
+                fillColor: Colors.transparent,
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 errorBorder: OutlineInputBorder(
                   borderRadius: _iosRadius,
                   borderSide: BorderSide(
-                    color: errorClr.withOpacity(0.7),
-                    width: 1.5,
+                    color: errorClr.withOpacity(0.5),
+                    width: 0.8,
                   ),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
                   borderRadius: _iosRadius,
-                  borderSide: BorderSide(color: errorClr, width: 1.5),
+                  borderSide: BorderSide(color: errorClr, width: 0.8),
                 ),
                 disabledBorder: InputBorder.none,
                 hintStyle: TextStyle(
@@ -281,7 +384,6 @@ class _AppTextFieldState extends State<AppTextField> {
             ),
           ),
         ),
-        if (widget.helperText == null) const SizedBox(height: 0),
       ],
     );
   }

@@ -32,6 +32,7 @@ class UserService {
 
    Future<UserResponse> getMe() async{
      final response = await dio.get("/user/me");
+     print(response.data);
      return UserResponse.fromJson(response.data);
    }
 

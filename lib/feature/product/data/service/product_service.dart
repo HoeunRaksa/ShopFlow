@@ -90,9 +90,22 @@ class ProductService {
         ),
     });
 
-    final response = await dio.put("/product/update/$id", data: formData);
+    try {
+      final response = await dio.put(
+        "/product/update/$id",
+        data: formData,
+        options: Options(
+          contentType: Headers.multipartFormDataContentType,
+        ),
+      );
 
-    return ProductResponse.fromJson(response.data);
+      return ProductResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      print("STATUS = ${e.response?.statusCode}");
+      print("DATA = ${e.response?.data}");
+      rethrow;
+    }
+
   }
 
   Future<void> deleteProduct(int id) async {

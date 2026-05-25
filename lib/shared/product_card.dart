@@ -152,7 +152,7 @@ class ProductCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               product.description,
-                              maxLines: 2,
+                              maxLines: 4,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: theme.colorScheme.onSurfaceVariant,
