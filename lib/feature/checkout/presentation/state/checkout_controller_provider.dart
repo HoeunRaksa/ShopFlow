@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:newprovider/feature/cart/presentation/state/cart_contoller.dart';
-import 'package:newprovider/feature/category/presentation/state/category_controller.dart';
 import '../../../../core/result_ressage.dart';
 import '../../data/model/OrderResponse.dart';
 import '../../data/model/location_request.dart';
@@ -98,6 +97,14 @@ class CheckoutController extends AsyncNotifier<ResultMessage<OrderResponse>?> {
       _isSubmitting = false;
     }
   }
+
+  Future<void> startPayment(int paymentId) async {
+    _triggerPaymentCallback(
+      paymentId,
+      PaymentStatus.paid,
+    );
+  }
+
   void _startPaymentCountdown(int paymentId) {
     const int countdownSeconds = 3;
 

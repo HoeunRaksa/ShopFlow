@@ -28,8 +28,6 @@ class AppIconButton extends StatelessWidget {
   final bool isLoading;
   final bool isRounded;
   final bool badge;
-
-  // ✅ NEW
   final bool isBackground;
 
   @override
@@ -39,25 +37,21 @@ class AppIconButton extends StatelessWidget {
     final disabled = onPressed == null || isLoading;
 
     final iconSize = AppStyle.iconSize(context);
-
-    final dim = iconSize;
+    final dim = iconSize + 20;
 
     final colors = {
       AppIconButtonStyle.primary: (
       bg: scheme.primary,
       fg: scheme.onPrimary,
       ),
-
       AppIconButtonStyle.danger: (
       bg: scheme.error,
       fg: scheme.onError,
       ),
-
       AppIconButtonStyle.success: (
       bg: const Color(0xFF3B6D11),
       fg: Colors.white,
       ),
-
       AppIconButtonStyle.warning: (
       bg: const Color(0xFF854F0B),
       fg: Colors.white,
@@ -69,14 +63,14 @@ class AppIconButton extends StatelessWidget {
 
       return switch (style) {
         AppIconButtonStyle.outline ||
-        AppIconButtonStyle.text => scheme.onSurface,
+        AppIconButtonStyle.text =>
+        scheme.onSurface,
 
         _ => colors[style]!.fg,
       };
     }
 
     Color bgColor() {
-      // ✅ NO BACKGROUND
       if (!isBackground) {
         return Colors.transparent;
       }
@@ -95,7 +89,7 @@ class AppIconButton extends StatelessWidget {
     }
 
     BorderSide borderSide() {
-      if (style != AppIconButtonStyle.outline) {
+      if (!isBackground || style != AppIconButtonStyle.outline) {
         return BorderSide.none;
       }
 
@@ -146,15 +140,20 @@ class AppIconButton extends StatelessWidget {
 
     return IconButton(
       onPressed: disabled ? null : onPressed,
-
       constraints: BoxConstraints(
         minWidth: dim,
         minHeight: dim,
       ),
-
       style: IconButton.styleFrom(
         backgroundColor: bgColor(),
         foregroundColor: fgColor(),
+        disabledBackgroundColor: Colors.transparent,
+
+        overlayColor:
+        isBackground ? null : Colors.transparent,
+
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
 
         fixedSize: Size(dim, dim),
         minimumSize: Size(dim, dim),
@@ -172,7 +171,6 @@ class AppIconButton extends StatelessWidget {
           side: borderSide(),
         ),
       ),
-
       icon: iconChild,
     );
   }

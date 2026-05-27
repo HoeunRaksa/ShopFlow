@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:newprovider/core/dio_provider.dart';
+import 'package:newprovider/core/network/dio_provider.dart';
 import '../../../../core/api_response.dart';
 import '../model/cart_response.dart';
 

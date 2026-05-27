@@ -1,8 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:newprovider/shared/app_bar_icon_button.dart';
-import 'package:newprovider/shared/app_button.dart.dart';
-
 import '../../../../shared/app_icon_button.dart';
 
 class CartItem extends StatelessWidget {

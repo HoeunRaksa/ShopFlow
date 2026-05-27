@@ -28,11 +28,11 @@ class ProductView extends ConsumerWidget {
     return LayoutBuilder(
 
       builder: (context, constraints) {
-        final w = constraints.maxWidth;
+        final w = AppStyle.screenWidth(context);
+        final iconSize = AppStyle.iconSize(context, w * 1.5);
         final padding = AppStyle.padding(context, w);
         final titleSize = AppStyle.titleSize(context, w);
         final bodySize = AppStyle.bodySize(context, w);
-        final iconSize = AppStyle.iconSize(context, w);
         final maxWidth = AppStyle.maxWidth(context);
 
         return Scaffold(

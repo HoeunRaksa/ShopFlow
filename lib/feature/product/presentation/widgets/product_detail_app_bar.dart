@@ -27,21 +27,21 @@ class ProductDetailAppBar extends ConsumerWidget
       loading: () => AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
-        iconTheme: IconThemeData(color: colorScheme.onSurface),
+        iconTheme: IconThemeData(color: colorScheme.onSurface, size: iconSize),
         title: const Text("Loading..."),
       ),
 
       error: (e, _) => AppBar(
         backgroundColor:theme.scaffoldBackgroundColor,
         elevation: 0,
-        iconTheme: IconThemeData(color: colorScheme.onSurface),
+        iconTheme: IconThemeData(color: colorScheme.onSurface, size: iconSize),
         title: const Text("Error"),
       ),
 
       data: (product) => AppBar(
         backgroundColor:theme.scaffoldBackgroundColor,
         elevation: 0,
-        iconTheme: IconThemeData(color: colorScheme.onSurface),
+        iconTheme: IconThemeData(color: colorScheme.onSurface, size: iconSize),
         title: Text(
           product.name,
           style: theme.textTheme.titleMedium?.copyWith(
@@ -52,8 +52,7 @@ class ProductDetailAppBar extends ConsumerWidget
         actions: [
           product.userId == user?.id
               ? AppBarIconButton(
-            isBackground: true,
-            icon: Icons.edit_rounded,
+            icon: Icons.edit_outlined,
             iconSize: iconSize,
             onPressed: () {
               context.push(

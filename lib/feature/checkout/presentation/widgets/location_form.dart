@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../core/app_style.dart';
 import '../../../../core/result_ressage.dart';
 import '../../../../shared/app_button.dart.dart';
 import '../../../../shared/app_select_field.dart';
 import '../../../../shared/app_text_field.dart';
+import '../../../../shared/payment_count_down_dialog.dart';
 import '../../data/model/location_request.dart';
 import '../state/checkout_controller_provider.dart';
 
@@ -85,22 +85,77 @@ class _LocationFormState extends ConsumerState<LocationForm> {
       if (mounted) setState(() => _isSubmitting = false);
     }
   }
+
   void _showPaymentCountdownDialog() {
     if (_isCountdownDialogOpen) return;
     _isCountdownDialogOpen = true;
 
-    showDialog<void>(
+    showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _PaymentCountdownDialog(
-        onDismissed: () {
-          if (mounted) {
-            setState(() => _isCountdownDialogOpen = false);
-          }
-        },
-      ),
+      barrierLabel: "",
+      barrierColor: Colors.black.withOpacity(0.6),
+      transitionDuration: const Duration(milliseconds: 400),
+
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: PaymentCountdownDialog(
+            onDismissed: () {
+              if (mounted) {
+                setState(() {
+                  _isCountdownDialogOpen = false;
+                });
+              }
+            },
+          ),
+        );
+      },
+
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final slideAnimation = Tween<Offset>(
+          begin: const Offset(0, 1),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+        final fadeAnimation = Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(
+          CurvedAnimation(
+            parent: animation,
+            curve: const Interval(0.0, 0.6, curve: Curves.easeIn),
+          ),
+        );
+        final scaleAnimation = Tween<double>(
+          begin: 0.95,
+          end: 1.0,
+        ).animate(
+          CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+
+        return FadeTransition(
+          opacity: fadeAnimation,
+          child: SlideTransition(
+            position: slideAnimation,
+            child: ScaleTransition(
+              scale: scaleAnimation,
+              alignment: Alignment.bottomCenter,
+              child: child,
+            ),
+          ),
+        );
+      },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -127,10 +182,10 @@ class _LocationFormState extends ConsumerState<LocationForm> {
           ..showSnackBar(
             SnackBar(
               content: Text(next.message),
-              duration: const Duration(seconds: 3),
+              duration: const Duration(seconds: 15),
             ),
           );
-        Future.delayed(const Duration(seconds: 3), () {
+        Future.delayed(const Duration(seconds: 15), () {
           if (!mounted) return;
           Navigator.of(context).popUntil((route) => route.isFirst);
         });
@@ -367,84 +422,6 @@ class _LocationFormState extends ConsumerState<LocationForm> {
               },
             ),
           ],
-        ],
-      ),
-    );
-  }
-}
-class _PaymentCountdownDialog extends ConsumerWidget {
-  const _PaymentCountdownDialog({required this.onDismissed});
-
-  final VoidCallback onDismissed;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final countdown = ref.watch(paymentCountdownProvider);
-    if (countdown == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (Navigator.of(context).canPop()) {
-          Navigator.of(context).pop();
-          onDismissed();
-        }
-      });
-    }
-
-    final theme = Theme.of(context);
-
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      contentPadding:
-      const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Animated countdown ring
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox(
-                width: 80,
-                height: 80,
-                child: CircularProgressIndicator(
-                  value: countdown != null ? countdown / 3.0 : 0,
-                  strokeWidth: 6,
-                  backgroundColor: theme.colorScheme.surfaceVariant,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-              Text(
-                countdown?.toString() ?? '✓',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          Text(
-            countdown != null
-                ? 'Processing payment…'
-                : 'Payment confirmed!',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-            textAlign: TextAlign.center,
-          ),
-
-          const SizedBox(height: 8),
-
-          Text(
-            countdown != null
-                ? 'Please wait while we confirm\nyour payment with the provider.'
-                : 'Your order has been placed successfully.',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            textAlign: TextAlign.center,
-          ),
         ],
       ),
     );

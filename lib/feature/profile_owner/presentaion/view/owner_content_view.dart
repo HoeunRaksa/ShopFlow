@@ -6,14 +6,17 @@ import 'package:newprovider/core/app_style.dart';
 import 'package:newprovider/feature/user_profile/data/model/UserResponse.dart';
 import '../state/user_owner_controller.dart';
 import '../widgets/owner_content_body.dart';
+
 class OwnerContentView extends ConsumerStatefulWidget {
   final UserResponse user;
   const OwnerContentView({super.key, required this.user});
+
   @override
   ConsumerState<OwnerContentView> createState() => _OwnerContentViewState();
 }
 
 class _OwnerContentViewState extends ConsumerState<OwnerContentView> {
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

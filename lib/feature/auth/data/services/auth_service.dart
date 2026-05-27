@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/dio_provider.dart';
+import '../../../../core/network/dio_provider.dart';
 import '../models/AuthResponse.dart';
 import '../models/LoginRequest.dart';
 import '../models/RegisterRequest.dart';

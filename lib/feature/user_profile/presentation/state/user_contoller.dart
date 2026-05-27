@@ -20,14 +20,17 @@ class UserController extends AsyncNotifier<UserResponse?> {
   }
 
   Future<void> uploadImage(File file) async {
+    final currentUser = state.value;
+
     try {
       state = const AsyncLoading();
+
       final imageUrl = await userService.uploadImage(file);
-      final currentUser = state.value;
+
       if (currentUser != null) {
         state = AsyncData(currentUser.copyWith(imageUrl: imageUrl));
       } else {
-        state = AsyncData(null);
+        state = AsyncData(await userService.getMe());
       }
     } catch (e, st) {
       state = AsyncError(e, st);

@@ -14,6 +14,7 @@ import '../../feature/product/presentation/view/product_management.dart';
 import '../../feature/product/presentation/view/product_view.dart';
 import '../../feature/profile_owner/presentaion/view/owner_content_view.dart';
 import '../../feature/profile_owner/presentaion/view/owner_profile_view.dart';
+import '../../feature/upgradePlan/presentation/view/plan_payment_view.dart';
 import '../../feature/user_profile/data/model/UserResponse.dart';
 import '../../feature/user_profile/presentation/view/create_contact_view.dart';
 
@@ -26,9 +27,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         appBar: AppBar(title: const Text("Route Error")),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
-          child: Text(
-            state.error?.toString() ?? "Page not found",
-          ),
+          child: Text(state.error?.toString() ?? "Page not found"),
         ),
       );
     },
@@ -39,10 +38,10 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       final isAuthPage =
           path == '/login' ||
-              path == '/register' ||
-              path == '/otp' ||
-              path == '/splash' ||
-              path == '/';
+          path == '/register' ||
+          path == '/otp' ||
+          path == '/splash' ||
+          path == '/';
 
       if (!loggedIn && !isAuthPage) {
         return '/login';
@@ -52,10 +51,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
 
     routes: [
-      GoRoute(
-        path: '/',
-        redirect: (_, __) => '/splash',
-      ),
+      GoRoute(path: '/', redirect: (_, __) => '/splash'),
 
       GoRoute(
         path: '/splash',
@@ -74,7 +70,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'register',
         builder: (context, state) => const RegisterView(),
       ),
-
+      GoRoute(
+        path: '/payment-view/:id',
+        name: 'payment-view',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return PlanPaymentView(subscriptionId: id);
+        },
+      ),
       GoRoute(
         path: '/otp',
         name: 'otp',
@@ -150,9 +153,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'owner',
         builder: (context, state) {
           final userId = int.parse(state.pathParameters['id']!);
-          return OwnerProfileView(
-            userId: userId,
-          );
+          return OwnerProfileView(userId: userId);
         },
       ),
 
@@ -161,10 +162,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'owner-content',
         builder: (context, state) {
           final user = state.extra as UserResponse;
-          return OwnerContentView(user : user);
+          return OwnerContentView(user: user);
         },
       ),
-
     ],
   );
 });

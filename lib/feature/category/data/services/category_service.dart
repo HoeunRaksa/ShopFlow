@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:newprovider/core/dio_provider.dart';
+import 'package:newprovider/core/network/dio_provider.dart';
 import 'package:newprovider/feature/category/data/models/category_response.dart';
 
 final categoryServiceProvider = Provider<CategoryService>((ref){

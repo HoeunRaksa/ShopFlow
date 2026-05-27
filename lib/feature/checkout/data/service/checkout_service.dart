@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:newprovider/core/dio_provider.dart';
+import 'package:newprovider/core/network/dio_provider.dart';
 import 'package:newprovider/feature/checkout/data/model/location_request.dart';
 import 'package:newprovider/feature/checkout/data/model/location_response.dart';
 import '../../../../core/result_ressage.dart';

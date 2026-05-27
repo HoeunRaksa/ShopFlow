@@ -1,4 +1,4 @@
-import '../constants.dart';
+import '../network/constants.dart';
 
 class HelperImage {
   static String buildImageUrl(String? imageUrl) {

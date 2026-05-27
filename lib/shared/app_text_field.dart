@@ -26,8 +26,9 @@ class AppTextField extends StatefulWidget {
     this.autofocus = false,
     this.textCapitalization = TextCapitalization.none,
     this.iosStyle = false,
+    this.onPressed,
   });
-
+  final VoidCallback? onPressed;
   final String? label;
   final String? hint;
   final String? helperText;
@@ -88,7 +89,11 @@ class _AppTextFieldState extends State<AppTextField> {
     return _buildDefault(theme, colorScheme, errorClr);
   }
 
-  Widget _buildDefault(ThemeData theme, ColorScheme colorScheme, Color errorClr) {
+  Widget _buildDefault(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    Color errorClr,
+  ) {
     final isDark = theme.brightness == Brightness.dark;
 
     return Column(
@@ -117,30 +122,30 @@ class _AppTextFieldState extends State<AppTextField> {
             color: isDark
                 ? Colors.white.withOpacity(_isFocused ? 0.09 : 0.05)
                 : (_isFocused
-                ? colorScheme.primary.withOpacity(0.03)
-                : Colors.black.withOpacity(0.035)),
+                      ? colorScheme.primary.withOpacity(0.03)
+                      : Colors.black.withOpacity(0.035)),
             boxShadow: _isFocused
                 ? [
-              BoxShadow(
-                color: colorScheme.primary.withOpacity(0.12),
-                blurRadius: 0,
-                spreadRadius: 1.5,
-              ),
-              BoxShadow(
-                color: colorScheme.primary.withOpacity(0.06),
-                blurRadius: 8,
-                spreadRadius: 0,
-                offset: const Offset(0, 2),
-              ),
-            ]
+                    BoxShadow(
+                      color: colorScheme.primary.withOpacity(0.12),
+                      blurRadius: 0,
+                      spreadRadius: 1.5,
+                    ),
+                    BoxShadow(
+                      color: colorScheme.primary.withOpacity(0.06),
+                      blurRadius: 8,
+                      spreadRadius: 0,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
                 : [
-              BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
-                blurRadius: 4,
-                spreadRadius: 0,
-                offset: const Offset(0, 1),
-              ),
-            ],
+                    BoxShadow(
+                      color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                      blurRadius: 4,
+                      spreadRadius: 0,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
           ),
           child: ClipRRect(
             borderRadius: _radius,
@@ -177,27 +182,32 @@ class _AppTextFieldState extends State<AppTextField> {
                 counterText: '',
                 prefixIcon: widget.prefixIcon != null
                     ? IconTheme(
-                  data: IconThemeData(
-                    color: _isFocused
-                        ? colorScheme.primary.withOpacity(0.8)
-                        : theme.hintColor,
-                    size: 18,
-                  ),
-                  child: widget.prefixIcon!,
-                )
+                        data: IconThemeData(
+                          color: _isFocused
+                              ? colorScheme.primary.withOpacity(0.8)
+                              : theme.hintColor,
+                          size: 18,
+                        ),
+                        child: widget.prefixIcon!,
+                      )
                     : null,
                 suffixIcon: widget.isPassword
                     ? IconButton(
-                  icon: Icon(
-                    _obscure
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                    size: 18,
-                    color: theme.hintColor,
-                  ),
-                  onPressed: () => setState(() => _obscure = !_obscure),
-                )
-                    : widget.suffixIcon,
+                        icon: Icon(
+                          _obscure
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          size: 18,
+                          color: theme.hintColor,
+                        ),
+                        onPressed: () => setState(() => _obscure = !_obscure),
+                      )
+                    : widget.suffixIcon != null
+                    ? IconButton(
+                        onPressed: widget.onPressed,
+                        icon: widget.suffixIcon!,
+                      )
+                    : null,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 14,
                   vertical: 14,
@@ -216,10 +226,7 @@ class _AppTextFieldState extends State<AppTextField> {
                 ),
                 focusedErrorBorder: OutlineInputBorder(
                   borderRadius: _radius,
-                  borderSide: BorderSide(
-                    color: colorScheme.error,
-                    width: 0.8,
-                  ),
+                  borderSide: BorderSide(color: colorScheme.error, width: 0.8),
                 ),
                 disabledBorder: InputBorder.none,
                 labelStyle: TextStyle(
@@ -231,10 +238,7 @@ class _AppTextFieldState extends State<AppTextField> {
                   color: theme.hintColor,
                   fontWeight: FontWeight.w400,
                 ),
-                errorStyle: TextStyle(
-                  fontSize: 11,
-                  color: colorScheme.error,
-                ),
+                errorStyle: TextStyle(fontSize: 11, color: colorScheme.error),
               ),
             ),
           ),
@@ -272,30 +276,30 @@ class _AppTextFieldState extends State<AppTextField> {
             color: isDark
                 ? Colors.white.withOpacity(_isFocused ? 0.10 : 0.06)
                 : (_isFocused
-                ? colorScheme.primary.withOpacity(0.03)
-                : Colors.black.withOpacity(0.030)),
+                      ? colorScheme.primary.withOpacity(0.03)
+                      : Colors.black.withOpacity(0.030)),
             boxShadow: _isFocused
                 ? [
-              BoxShadow(
-                color: colorScheme.primary.withOpacity(0.13),
-                blurRadius: 0,
-                spreadRadius: 1.5,
-              ),
-              BoxShadow(
-                color: colorScheme.primary.withOpacity(0.07),
-                blurRadius: 10,
-                spreadRadius: 0,
-                offset: const Offset(0, 3),
-              ),
-            ]
+                    BoxShadow(
+                      color: colorScheme.primary.withOpacity(0.13),
+                      blurRadius: 0,
+                      spreadRadius: 1.5,
+                    ),
+                    BoxShadow(
+                      color: colorScheme.primary.withOpacity(0.07),
+                      blurRadius: 10,
+                      spreadRadius: 0,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
                 : [
-              BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.22 : 0.06),
-                blurRadius: 6,
-                spreadRadius: 0,
-                offset: const Offset(0, 1),
-              ),
-            ],
+                    BoxShadow(
+                      color: Colors.black.withOpacity(isDark ? 0.22 : 0.06),
+                      blurRadius: 6,
+                      spreadRadius: 0,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
           ),
           child: ClipRRect(
             borderRadius: _iosRadius,
@@ -332,26 +336,26 @@ class _AppTextFieldState extends State<AppTextField> {
                 counterText: '',
                 prefixIcon: widget.prefixIcon != null
                     ? IconTheme(
-                  data: IconThemeData(
-                    color: _isFocused
-                        ? colorScheme.primary.withOpacity(0.8)
-                        : theme.hintColor,
-                    size: 18,
-                  ),
-                  child: widget.prefixIcon!,
-                )
+                        data: IconThemeData(
+                          color: _isFocused
+                              ? colorScheme.primary.withOpacity(0.8)
+                              : theme.hintColor,
+                          size: 18,
+                        ),
+                        child: widget.prefixIcon!,
+                      )
                     : null,
                 suffixIcon: widget.isPassword
                     ? IconButton(
-                  icon: Icon(
-                    _obscure
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                    size: 18,
-                    color: theme.hintColor,
-                  ),
-                  onPressed: () => setState(() => _obscure = !_obscure),
-                )
+                        icon: Icon(
+                          _obscure
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          size: 18,
+                          color: theme.hintColor,
+                        ),
+                        onPressed: () => setState(() => _obscure = !_obscure),
+                      )
                     : widget.suffixIcon,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 14,

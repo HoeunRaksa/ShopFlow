@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:newprovider/core/api_response.dart';
 import 'package:newprovider/feature/product/data/models/product_response.dart';
-import '../../../../core/dio_provider.dart';
+import '../../../../core/network/dio_provider.dart';
 import '../models/product_request.dart';
 
 

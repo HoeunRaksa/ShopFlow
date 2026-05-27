@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import '../../../../core/dio_provider.dart';
+import '../../../../core/network/dio_provider.dart';
 import '../../../../core/token_storage.dart';
 import '../../data/models/AuthResponse.dart';
 import '../../data/models/LoginRequest.dart';

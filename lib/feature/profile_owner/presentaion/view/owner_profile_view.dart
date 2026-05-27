@@ -18,7 +18,7 @@ class OwnerProfileView extends ConsumerWidget {
         backgroundColor: theme.scaffoldBackgroundColor,
         automaticallyImplyActions: true,
         leading: AppBarIconButton(
-          isBackground: false,
+
           icon: Icons.arrow_back,
           iconSize: 20,
           onPressed: () {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:newprovider/shared/app_text_field.dart';
 import '../../../../shared/app_bar_icon_button.dart';
 import '../state/home_controller.dart';
 
@@ -12,6 +11,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback onSearch;
   final VoidCallback onNotification;
+  final double height;
 
   const HomeAppBar({
     super.key,
@@ -22,18 +22,17 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
     required this.title,
     required this.onSearch,
     required this.onNotification,
+    this.height = 150
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize =>  Size.fromHeight(height);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final bool isProductManagerForm =
-        ref.watch(appBarTitleProvider) == "Creation" ||
-        ref.watch(appBarTitleProvider) == "Profile";
+        ref.watch(appBarTitleProvider) == "Creation" || ref.watch(appBarTitleProvider) == "Upgrade" || ref.watch(appBarTitleProvider) == "Profile";
 
     return AppBar(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -47,21 +46,12 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
       title: Row(
         children: [
           Builder(
-            builder: (ctx) => GestureDetector(
-              onTap: () => Scaffold.of(ctx).openDrawer(),
-
-              child: Container(
-                width: 42,
-                height: 42,
-
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-
-                  borderRadius: BorderRadius.circular(12),
-                ),
-
-                child: Icon(Icons.menu_rounded, size: iconSize, color: Colors.white),
-              ),
+            builder: (ctx) => AppBarIconButton(
+              icon: Icons.menu_rounded,
+              iconSize: iconSize,
+              onPressed: () => Scaffold.of(ctx).openDrawer(),
+              filled: true,
+              color: theme.colorScheme.primary,
             ),
           ),
 
@@ -85,14 +75,12 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
       actions: !isProductManagerForm
           ? [
               AppBarIconButton(
-                isBackground: true,
                 icon: Icons.search_rounded,
                 iconSize: iconSize,
                 onPressed: onSearch,
               ),
 
               AppBarIconButton(
-                isBackground: true,
                 icon: Icons.notifications_none_rounded,
                 iconSize: iconSize,
                 onPressed: onNotification,

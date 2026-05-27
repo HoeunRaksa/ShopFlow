@@ -199,8 +199,7 @@ class HomeDrawer extends ConsumerWidget {
                               ref.watch(themeTypeProvider) ==
                               AppThemeType.system,
                           onTap: () {
-                            ref.read(themeTypeProvider.notifier).state =
-                                AppThemeType.system;
+                            ref.read(themeTypeProvider.notifier).changeTheme(AppThemeType.system);
                           },
                         ),
 
@@ -213,8 +212,7 @@ class HomeDrawer extends ConsumerWidget {
                               ref.watch(themeTypeProvider) ==
                               AppThemeType.light,
                           onTap: () {
-                            ref.read(themeTypeProvider.notifier).state =
-                                AppThemeType.light;
+                            ref.read(themeTypeProvider.notifier).changeTheme(AppThemeType.light);
                           },
                         ),
 
@@ -226,8 +224,7 @@ class HomeDrawer extends ConsumerWidget {
                           isSelected:
                               ref.watch(themeTypeProvider) == AppThemeType.dark,
                           onTap: () {
-                            ref.read(themeTypeProvider.notifier).state =
-                                AppThemeType.dark;
+                            ref.read(themeTypeProvider.notifier).changeTheme(AppThemeType.dark);
                           },
                         ),
 
@@ -240,8 +237,7 @@ class HomeDrawer extends ConsumerWidget {
                               ref.watch(themeTypeProvider) ==
                               AppThemeType.midnight,
                           onTap: () {
-                            ref.read(themeTypeProvider.notifier).state =
-                                AppThemeType.midnight;
+                            ref.read(themeTypeProvider.notifier).changeTheme(AppThemeType.midnight);
                           },
                         ),
 
@@ -254,8 +250,8 @@ class HomeDrawer extends ConsumerWidget {
                               ref.watch(themeTypeProvider) ==
                               AppThemeType.forest,
                           onTap: () {
-                            ref.read(themeTypeProvider.notifier).state =
-                                AppThemeType.forest;
+
+                            ref.read(themeTypeProvider.notifier).changeTheme(AppThemeType.forest);
                           },
                         ),
                       ],

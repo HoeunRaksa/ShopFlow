@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:newprovider/core/api_response.dart';
-import 'package:newprovider/core/dio_provider.dart';
+import 'package:newprovider/core/network/dio_provider.dart';
 import 'package:newprovider/feature/user_profile/data/model/UserResponse.dart';
 import 'package:newprovider/feature/user_profile/data/model/user_change_password_request.dart';
 import 'package:newprovider/feature/user_profile/data/model/user_set_contact.dart';
