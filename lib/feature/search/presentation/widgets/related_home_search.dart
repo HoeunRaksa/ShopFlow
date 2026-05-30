@@ -29,75 +29,86 @@ class RelatedHomeSearch extends ConsumerWidget {
           ),
         ),
 
-        if (!isSubmit)
-          asyncHistory.when(
-            data: (histories) {
-              final filterHistory = searchText.toLowerCase().isEmpty
-                  ? histories
-                  : histories
-                  .where(
-                    (item) =>
-                    item.keyword.toLowerCase().startsWith(searchText),
-              )
-                  .toList();
+        // Wrapping conditional structures inside a strict layout scope
+        // prevents Flutter's viewport from crashing on layout switches.
+        SliverMainAxisGroup(
+          slivers: [
+            if (!isSubmit)
+              asyncHistory.when(
+                data: (histories) {
+                  final filterHistory = searchText.trim().isEmpty
+                      ? histories
+                      : histories
+                      .where((item) => item.keyword
+                      .toLowerCase()
+                      .startsWith(searchText))
+                      .toList();
 
-              if (filterHistory.isEmpty) {
-                return const SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                    child: Text('No search history found'),
-                  ),
-                );
-              }
-
-              return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                    final history = filterHistory[index];
-
-                    return Material(
-                      child: InkWell(
-                        onTap: () {
-                          //Navigator.pop(context);
-                        },
-                        child: ListTile(
-                          leading: const Icon(Icons.circle, size: 8),
-                          title: Text(history.keyword),
-                          trailing: IconButton(
-                            icon: Icon(Icons.close, size: iconSize),
-                            onPressed: () {
-                              ref
-                                  .read(searchControllerProvider.notifier)
-                                  .removeItem(history.keyword);
-                            },
-                          ),
-                        ),
+                  if (filterHistory.isEmpty) {
+                    return const SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: Text('No search history found'),
                       ),
                     );
-                  },
-                  childCount: filterHistory.length,
-                ),
-              );
-            },
-            loading: () => const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            error: (e, _) => SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: Text(e.toString()),
-              ),
-            ),
-          ),
+                  }
 
-        if (isSubmit)
-          SliverFillRemaining(
-            hasScrollBody: true,
-            child: SearchBody(searchKey: searchText),
-          ),
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                        final history = filterHistory[index];
+
+                        return Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              ref.read(searchTextProvider.notifier).state = history.keyword;
+                              ref.read(isSubmitControllerProvider.notifier).state = true;
+                              ref.read(searchResultControllerProvider.notifier).performSearch(
+                                name: history.keyword,
+                                categoryName: history.keyword,
+                              );
+                            },
+                            child: ListTile(
+                              leading: const Icon(Icons.circle, size: 8),
+                              title: Text(history.keyword),
+                              trailing: IconButton(
+                                icon: Icon(Icons.close, size: iconSize),
+                                onPressed: () {
+                                  ref
+                                      .read(searchControllerProvider.notifier)
+                                      .removeItem(history.keyword);
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      childCount: filterHistory.length,
+                    ),
+                  );
+                },
+                loading: () => const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                error: (e, _) => SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: Text(e.toString()),
+                  ),
+                ),
+              ),
+
+            if (isSubmit)
+              SliverFillRemaining(
+                hasScrollBody: true,
+                child: SearchBody(searchKey: searchText),
+              ),
+          ],
+        ),
       ],
     );
   }
@@ -118,10 +129,10 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
   static final _focusNode = FocusNode();
 
   @override
-  double get minExtent => height;
+  double get minExtent => height < 66.0 ? 66.0 : height;
 
   @override
-  double get maxExtent => height;
+  double get maxExtent => height < 66.0 ? 66.0 : height;
 
   @override
   Widget build(
@@ -129,63 +140,57 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
       double shrinkOffset,
       bool overlapsContent,
       ) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).shadowColor.withOpacity(.06),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
+    return SizedBox.expand(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).shadowColor.withOpacity(.06),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
-        child: SearchField(
-          controller: _controller,
-          focusNode: _focusNode,
-          onSubmitted: (value) {
-            final trimmed = value.trim();
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Center(
+            child: SearchField(
+              controller: _controller,
+              focusNode: _focusNode,
+              onSubmitted: (value) {
+                final trimmed = value.trim();
+                if (trimmed.isEmpty) return;
 
-            if (trimmed.isEmpty) return;
+                ref.read(searchControllerProvider.notifier).saveSearch(trimmed);
+                ref.read(searchTextProvider.notifier).state = trimmed;
+                ref.read(isSubmitControllerProvider.notifier).state = true;
+                ref.read(searchResultControllerProvider.notifier).performSearch(
+                  name: trimmed,
+                  categoryName: trimmed,
+                );
 
-            ref.read(searchControllerProvider.notifier).saveSearch(trimmed);
-
-            ref.read(searchTextProvider.notifier).state = trimmed;
-
-            ref.read(isSubmitControllerProvider.notifier).state = true;
-
-            ref.read(searchResultControllerProvider.notifier).performSearch(
-              name: trimmed,
-              categoryName: trimmed,
-            );
-
-            _focusNode.unfocus();
-          },
-          onClear: () {
-            _controller.clear();
-            _focusNode.requestFocus();
-
-            ref.read(isSubmitControllerProvider.notifier).state = false;
-            ref.read(searchTextProvider.notifier).state = '';
-          },
-          onDismiss: () {
-            _controller.clear();
-            _focusNode.unfocus();
-
-            ref.read(isSubmitControllerProvider.notifier).state = false;
-            ref.read(searchTextProvider.notifier).state = '';
-
-            onDismiss();
-          },
-          onChange: (value) {
-            ref.read(searchTextProvider.notifier).state = value.trim();
-            ref.read(isSubmitControllerProvider.notifier).state = false;
-          },
+                _focusNode.unfocus();
+              },
+              onClear: () {
+                _controller.clear();
+                _focusNode.requestFocus();
+                ref.read(isSubmitControllerProvider.notifier).state = false;
+                ref.read(searchTextProvider.notifier).state = '';
+              },
+              onDismiss: () {
+                _controller.clear();
+                _focusNode.unfocus();
+                ref.read(isSubmitControllerProvider.notifier).state = false;
+                ref.read(searchTextProvider.notifier).state = '';
+                onDismiss();
+              },
+              onChange: (value) {
+                ref.read(searchTextProvider.notifier).state = value.trim();
+                ref.read(isSubmitControllerProvider.notifier).state = false;
+              },
+            ),
+          ),
         ),
       ),
     );

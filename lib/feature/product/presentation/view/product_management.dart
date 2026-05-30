@@ -89,9 +89,6 @@ class _ProductManagementState extends ConsumerState<ProductManagement> {
                   height: height,
                 ),
                 body: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics(),
-                  ),
                   child: _buildForm(isEdit, w),
                 ),
               );
@@ -101,9 +98,6 @@ class _ProductManagementState extends ConsumerState<ProductManagement> {
 
         return Scaffold(
           body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
             child: _buildForm(isEdit, w),
           ),
         );

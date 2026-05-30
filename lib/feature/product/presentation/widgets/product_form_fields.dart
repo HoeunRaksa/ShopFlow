@@ -43,7 +43,7 @@ class ProductFormFields extends StatelessWidget {
         const SizedBox(height: 16),
         Text("Description", style: TextStyle(fontSize: fontSize, color: Theme.of(context).colorScheme.onSurface)),
         const SizedBox(height: 8),
-        AppTextField(controller: descriptionController,hint: "Enter description", maxLines: 3),
+        AppTextField(controller: descriptionController,hint: "Enter description"),
         const SizedBox(height: 16),
         Text("Price", style: TextStyle(fontSize: fontSize, color: Theme.of(context).colorScheme.onSurface)),
         const SizedBox(height: 8),

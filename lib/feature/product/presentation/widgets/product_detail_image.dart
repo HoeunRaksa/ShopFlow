@@ -20,7 +20,7 @@ class ProductDetailImage extends StatelessWidget {
       context,
       mobile: screenHeight * 0.36,
       tablet: screenHeight * 0.50,
-      desktop: screenHeight * 0.55,
+      desktop: screenHeight * 0.40,
     );
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),

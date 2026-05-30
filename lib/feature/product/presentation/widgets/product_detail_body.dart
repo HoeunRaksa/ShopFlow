@@ -31,8 +31,7 @@ class ProductDetailBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth),
-      child: SingleChildScrollView(
-        child: Column(
+      child:  Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Full bleed image ──
@@ -216,7 +215,7 @@ class ProductDetailBody extends StatelessWidget {
 
           ],
         ),
-      ),
+
     );
   }
 }

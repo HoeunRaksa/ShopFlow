@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../product/data/models/product_response.dart';
@@ -22,8 +23,7 @@ class FavoriteController extends AsyncNotifier<List<ProductResponse>> {
           validFavorites.add(ProductResponse.fromJson(decoded));
         }
       } catch (e) {
-        // Safely skips over old IDs or unparseable strings without crashing the UI
-        print("Skipping corrupted favorite data: $e");
+        debugPrint("Skipping corrupted favorite data: $e");
       }
     }
 

@@ -47,21 +47,25 @@ class ProductView extends ConsumerWidget {
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, _) => Center(child: Text("Error: $e")),
             data: (product) {
-              return ProductDetailBody(
-                  isFromHome: isFromHone,
-                  product: product,
-                  maxWidth: maxWidth,
-                  titleSize: titleSize,
-                  bodySize: bodySize,
-                  theme: theme,
-                  iconSize: iconSize,
-                  add: () => addToCard(productId, quantity),
-                  onTop: () {
-                    context.pushNamed(
-                      'owner',
-                      pathParameters: {'id': product.userId.toString()},
-                    );
-                  },
+              return Center(
+                child: SingleChildScrollView(
+                  child: ProductDetailBody(
+                    isFromHome: isFromHone,
+                    product: product,
+                    maxWidth: maxWidth,
+                    titleSize: titleSize,
+                    bodySize: bodySize,
+                    theme: theme,
+                    iconSize: iconSize,
+                    add: () => addToCard(productId, quantity),
+                    onTop: () {
+                      context.pushNamed(
+                        'owner',
+                        pathParameters: {'id': product.userId.toString()},
+                      );
+                    },
+                  ),
+                )
               );
             },
           ),
