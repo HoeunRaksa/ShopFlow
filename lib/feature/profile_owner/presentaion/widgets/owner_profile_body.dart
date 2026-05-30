@@ -27,82 +27,78 @@ class OwnerProfileBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final w = AppStyle.screenWidth(context);
-    final padding = AppStyle.padding(context, w);
     final bottomSpace = AppStyle.bottomSpace(context, w);
     final double imageSize = w * 0.30;
     final image = CachedNetworkImageProvider(
       user.displayImage,
     );
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: padding),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ClipRRect(
-            child: SizedBox(
-              width: imageSize,
-              height: imageSize,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: theme.colorScheme.surface,
-                    width: 2,
-                  ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        ClipRRect(
+          child: SizedBox(
+            width: imageSize,
+            height: imageSize,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: theme.colorScheme.surface,
+                  width: 2,
                 ),
-                child: CircleAvatar(backgroundImage: image),
               ),
+              child: CircleAvatar(backgroundImage: image),
             ),
           ),
-          SizedBox(height: bottomSpace),
-          InfoBlock(
-            title: 'Personal Info',
-            children: [
-              OwnerRowTitle(
-                icon: Icons.person,
-                text: '${user.firstName} ${user.lastName}',
-                isReadOnly: true,
-              ),
-              OwnerRowTitle(
-                icon: Icons.email,
-                text: user.email,
-                isReadOnly: true,
-              ),
-            ],
-          ),
-          SizedBox(height: bottomSpace),
-          BlockSocial(
-            children: [
-              OwnerRowTitle(icon: Icons.facebook_rounded, text: "Facebook",
-                onTap:() async {
-                     await _openUrl(user.facebookLink);
-                },
-              ),
-              OwnerRowTitle(icon: Icons.telegram_rounded, text: "Telegram"),
-              OwnerRowTitle(
-                icon: Icons.phone,
-                text: user.phoneNumber ?? "None",
-                color: Colors.green,
-                onTap: () async{
-                     await _openUrl(user.telegramLink);
-                },
-              ),
-            ],
-          ),
-          SizedBox(height: bottomSpace),
-          OtherContent(
-            children: [
-              OwnerRowTitle(
-                icon: Icons.production_quantity_limits,
-                text: "Share and content",
-                color: theme.colorScheme.primary,
-                onTap: () =>
-                  context.push('/owner-content', extra: user)
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+        SizedBox(height: bottomSpace),
+        InfoBlock(
+          title: 'Personal Info',
+          children: [
+            OwnerRowTitle(
+              icon: Icons.person,
+              text: '${user.firstName} ${user.lastName}',
+              isReadOnly: true,
+            ),
+            OwnerRowTitle(
+              icon: Icons.email,
+              text: user.email,
+              isReadOnly: true,
+            ),
+          ],
+        ),
+        SizedBox(height: bottomSpace),
+        BlockSocial(
+          children: [
+            OwnerRowTitle(icon: Icons.facebook_rounded, text: "Facebook",
+              onTap:() async {
+                   await _openUrl(user.facebookLink);
+              },
+            ),
+            OwnerRowTitle(icon: Icons.telegram_rounded, text: "Telegram"),
+            OwnerRowTitle(
+              icon: Icons.phone,
+              text: user.phoneNumber ?? "None",
+              color: Colors.green,
+              onTap: () async{
+                   await _openUrl(user.telegramLink);
+              },
+            ),
+          ],
+        ),
+        SizedBox(height: bottomSpace),
+        OtherContent(
+          children: [
+            OwnerRowTitle(
+              icon: Icons.production_quantity_limits,
+              text: "Share and content",
+              color: theme.colorScheme.primary,
+              onTap: () =>
+                context.push('/owner-content', extra: user)
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

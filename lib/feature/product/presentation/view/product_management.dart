@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:newprovider/core/app_style.dart';
 import 'package:newprovider/feature/category/presentation/state/category_controller.dart';
+import 'package:newprovider/shared/app_custom_appBar.dart';
 import '../../../../core/utils/helper_image.dart';
+import '../../../../shared/app_scaffold.dart';
 import '../state/product_controller.dart';
 import '../widgets/product_form.dart';
 
@@ -56,7 +58,7 @@ class _ProductManagementState extends ConsumerState<ProductManagement> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isEdit = widget.productId != null;
-
+    final height = AppStyle.appBarHeight(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth;
@@ -80,27 +82,30 @@ class _ProductManagementState extends ConsumerState<ProductManagement> {
                 imageUrl = HelperImage.buildImageUrl(product.imageUrl);
                 isInitialized = true;
               }
-              return Scaffold(
-                appBar: AppBar(
+              return AppScaffold(
+                appBar: AppCustomAppBar(
+                  title: "Modify Product",
                   backgroundColor: theme.scaffoldBackgroundColor,
-                  elevation: 0,
-                  iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
-                  title: Text(
-                    "Modify Product",
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.onSurface,
-                    ),
-                  ),
+                  height: height,
                 ),
-                body: SingleChildScrollView(child: _buildForm(isEdit, w)),
+                body: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics(),
+                  ),
+                  child: _buildForm(isEdit, w),
+                ),
               );
             },
           );
         }
 
         return Scaffold(
-          body: SingleChildScrollView(child: _buildForm(isEdit, w)),
+          body: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            child: _buildForm(isEdit, w),
+          ),
         );
       },
     );

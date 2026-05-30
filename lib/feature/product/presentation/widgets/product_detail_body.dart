@@ -5,7 +5,6 @@ import '../../../../shared/app_button.dart.dart';
 
 class ProductDetailBody extends StatelessWidget {
   final dynamic product;
-  final double padding;
   final double maxWidth;
   final double titleSize;
   final double bodySize;
@@ -18,7 +17,6 @@ class ProductDetailBody extends StatelessWidget {
   const ProductDetailBody({
     super.key,
     required this.product,
-    required this.padding,
     required this.maxWidth,
     required this.titleSize,
     required this.bodySize,
@@ -40,9 +38,7 @@ class ProductDetailBody extends StatelessWidget {
             // ── Full bleed image ──
             ProductDetailImage(imageUrl: product.imageUrl, onTop: onTop, isOwner: isFromHome,),
 
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: padding),
-              child: Column(
+           Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
@@ -217,7 +213,7 @@ class ProductDetailBody extends StatelessWidget {
                   const SizedBox(height: 32),
                 ],
               ),
-            ),
+
           ],
         ),
       ),

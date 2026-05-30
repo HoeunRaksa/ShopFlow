@@ -67,27 +67,41 @@ class _PlanPaymentScreenState extends ConsumerState<PlanPaymentForm> {
         return Align(
           alignment: Alignment.bottomCenter,
           child: PaymentCountdownDialog(
-            onDismissed: () {
-              Navigator.pop(dialogContext);
-            },
+              onDismissed: () {
+                debugPrint("DISMISS CALLBACK");
+                Navigator.of(dialogContext, rootNavigator: true).pop();
+              },
             onConfirm: () async {
-              final navigator = Navigator.of(dialogContext);
               debugPrint("CONFIRM CLICKED");
-              if(_paymentInProgress) return;
+
+              if (_paymentInProgress) return;
               _paymentInProgress = true;
-              final upgradeResponse = await ref
-                  .read(upgradePlanControllerProvider.notifier)
-                  .subscriptionMake(request);
-              debugPrint("UPGRADE RESPONSE = $upgradeResponse");
-              debugPrint("PAYMENT ID = ${upgradeResponse?.paymentId}");
-              final paymentId = upgradeResponse?.paymentId;
-              if (paymentId == null) {
+
+              final navigator = Navigator.of(dialogContext, rootNavigator: true);
+
+              try {
+                final upgradeResponse = await ref
+                    .read(upgradePlanControllerProvider.notifier)
+                    .subscriptionMake(request);
+
+                final paymentId = upgradeResponse?.paymentId;
+
+                if (paymentId == null) {
+                  navigator.pop();
+                  return;
+                }
+
+                await ref.read(checkoutProvider.notifier).startPayment(paymentId);
+
+                ref.invalidate(userControllerProvider);
+
+                navigator.pop();
+              } catch (e) {
+                debugPrint("PAYMENT ERROR = $e");
+                navigator.pop();
+              } finally {
                 _paymentInProgress = false;
-                return;
               }
-              await ref.read(checkoutProvider.notifier).startPayment(paymentId);
-               ref.refresh(userControllerProvider);
-              navigator.pop();
             },
           ),
         );
@@ -262,8 +276,6 @@ class _PlanSummaryCard extends StatelessWidget {
     final cardRadius = AppStyle.cardRadius(context);
     final sectionGap = AppStyle.sectionGap(context);
     final iconSz = AppStyle.iconSize(context);
-
-    // Avatar container size scales with icon
     final avatarSize = (iconSz * 2.2).clamp(36.0, 52.0);
 
     return Container(
@@ -300,7 +312,7 @@ class _PlanSummaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  plan.title ?? 'Subscription Plan',
+                  plan.title,
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),

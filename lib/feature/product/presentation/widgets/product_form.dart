@@ -42,53 +42,48 @@ class ProductForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productState = ref.watch(productControllerProvider);
     final maxSized = AppStyle.maxWidth(context);
-    final padding = AppStyle.padding(context);
     return Center(
         child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: maxSized),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: padding),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!isEdit) const SizedBox(height: 24),
+                  _SectionHeader(
+                    label: isEdit ? 'Edit Product' : 'New Product',
+                    icon: isEdit ? Icons.edit_outlined : Icons.add_box_outlined,
+                  ),
+                  const SizedBox(height: 16),
+                   ProductFormFields(
+                      nameController: nameController,
+                      descriptionController: descriptionController,
+                      priceController: priceController,
+                      stockController: stockController,
+                      imageUrl: imageUrl,
+                      imageFile: imageFile,
+                      selectedCategoryId: selectedCategoryId,
+                      onImagePick: onImagePick,
+                      onCategoryChanged: onCategoryChanged,
+                      categoryItems: categoryItems,
+                    ),
 
-      child: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (!isEdit) const SizedBox(height: 24),
-            _SectionHeader(
-              label: isEdit ? 'Edit Product' : 'New Product',
-              icon: isEdit ? Icons.edit_outlined : Icons.add_box_outlined,
-            ),
-            const SizedBox(height: 16),
-             ProductFormFields(
-                nameController: nameController,
-                descriptionController: descriptionController,
-                priceController: priceController,
-                stockController: stockController,
-                imageUrl: imageUrl,
-                imageFile: imageFile,
-                selectedCategoryId: selectedCategoryId,
-                onImagePick: onImagePick,
-                onCategoryChanged: onCategoryChanged,
-                categoryItems: categoryItems,
+                  const SizedBox(height: 24),
+                  AppButton(
+                    isFullWidth: true,
+                    label: productState.isLoading
+                        ? 'Saving…'
+                        : isEdit
+                        ? 'Update'
+                        : 'Save',
+                    onPressed: productState.isLoading
+                        ? null
+                        : () => _onSubmit(context, ref),
+                  ),
+                  const SizedBox(height: 32),
+                ],
               ),
-
-            const SizedBox(height: 24),
-            AppButton(
-              isFullWidth: true,
-              label: productState.isLoading
-                  ? 'Saving…'
-                  : isEdit
-                  ? 'Update'
-                  : 'Save',
-              onPressed: productState.isLoading
-                  ? null
-                  : () => _onSubmit(context, ref),
             ),
-            const SizedBox(height: 32),
-          ],
-        ),
-      ),
-    ),
         ),);
   }
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:newprovider/feature/history/presentation/view/order_history_view.dart';
 import 'package:newprovider/feature/user_profile/presentation/state/user_contoller.dart';
 import 'package:newprovider/feature/favorite/presentation/view/favorite_view.dart';
 import 'package:newprovider/feature/home/presentation/widgets/home_body.dart';
 import 'package:newprovider/feature/product/presentation/view/product_management.dart';
 import 'package:newprovider/feature/user_profile/presentation/view/profile_view.dart';
-
 import '../../../../core/app_style.dart';
 import '../../../cart/presentation/view/cart_view.dart';
 import '../../../../core/theme/theme_provider.dart';
@@ -92,6 +92,36 @@ class HomeDrawer extends ConsumerWidget {
                           CartView();
                     },
                   ),
+                  HomeDrawerItem(
+                    icon: Icons.sell_rounded,
+                    title: "sell history",
+                    iconSize: iconSize,
+                    fontSize: bodySize,
+                    isActive: activeMenu == "Sell-history",
+                    onTap: () {
+                      Navigator.pop(context);
+
+                      ref.read(appBarTitleProvider.notifier).state = "Sell-history";
+
+                      ref.read(shellBodyProvider.notifier).state = () =>
+                          OrderHistoryView(isSell: activeMenu == "Sell-history",);
+                    },
+                  ),
+                  HomeDrawerItem(
+                    icon: Icons.category_rounded,
+                    title: "Order history",
+                    iconSize: iconSize,
+                    fontSize: bodySize,
+                    isActive: activeMenu == "Order-history",
+                    onTap: () {
+                      Navigator.pop(context);
+
+                      ref.read(appBarTitleProvider.notifier).state = "Order-history";
+
+                      ref.read(shellBodyProvider.notifier).state = () =>
+                          OrderHistoryView();
+                    },
+                  ),
 
                   HomeDrawerItem(
                     icon: Icons.favorite_rounded,
@@ -119,21 +149,16 @@ class HomeDrawer extends ConsumerWidget {
                     isActive: activeMenu == "Profile",
                     onTap: () {
                       final user = ref.read(userControllerProvider).value;
-
                       if (user == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text("Profile loading, please try again"),
                           ),
                         );
-
                         return;
                       }
-
                       Navigator.pop(context);
-
                       ref.read(appBarTitleProvider.notifier).state = "Profile";
-
                       ref.read(shellBodyProvider.notifier).state = () =>
                           ProfileView(user: user);
                     },

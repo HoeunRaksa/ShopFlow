@@ -36,7 +36,6 @@ class HomeBody extends ConsumerWidget {
         final iconSize = AppStyle.iconSize(context, w);
         final bodySize = AppStyle.bodySize(context, w);
         final bottomSpace = AppStyle.bottomSpace(context, w);
-        final padding = AppStyle.padding(context, w);
 
         return RefreshIndicator(
           color: Theme.of(context).colorScheme.primary,
@@ -65,10 +64,7 @@ class HomeBody extends ConsumerWidget {
                 ),
                 data: (product3) {
                   return SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(padding, 12, padding, 8),
                       child: BannerCarousel(products: product3),
-                    ),
                   );
                 },
               ),
@@ -78,7 +74,6 @@ class HomeBody extends ConsumerWidget {
                 delegate: _CategoryStripDelegate(
                   selectCategory: selectedCategory,
                   onTap: onTap,
-                  padding: padding,
                   height: 64,
                   categories: listOfCategories,
                 ),
@@ -122,14 +117,12 @@ class HomeBody extends ConsumerWidget {
 }
 
 class _CategoryStripDelegate extends SliverPersistentHeaderDelegate {
-  final double padding;
   final double height;
   final String selectCategory;
   final void Function(String) onTap;
   final List<CategoryItem> categories;
 
   _CategoryStripDelegate({
-    required this.padding,
     required this.height,
     required this.selectCategory,
     required this.onTap,
@@ -163,7 +156,6 @@ class _CategoryStripDelegate extends SliverPersistentHeaderDelegate {
           height: height,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: padding, vertical: 0),
             itemCount: categories.length,
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (context, index) => _CategoryItem(
@@ -179,7 +171,6 @@ class _CategoryStripDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(_CategoryStripDelegate old) =>
-      old.padding != padding ||
           old.height != height ||
           old.selectCategory != selectCategory ||
           old.categories != categories;

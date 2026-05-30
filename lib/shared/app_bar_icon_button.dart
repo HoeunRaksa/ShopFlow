@@ -18,16 +18,16 @@ class AppBarIconButton extends StatelessWidget {
     this.isBackground = false,
     this.badge = false,
     this.color = Colors.black,
-    this.filled = false
+    this.filled = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final w = AppStyle.screenWidth(context);
-    final padding = AppStyle.padding(context,w);
+    final padding = AppStyle.padding(context, w);
     return Padding(
-      padding: EdgeInsets.only(right: padding),
+      padding: EdgeInsets.only(right: padding * 1.1 * 0.7),
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(9999),
@@ -35,16 +35,20 @@ class AppBarIconButton extends StatelessWidget {
           onTap: onPressed,
           borderRadius: BorderRadius.circular(9999),
           child: Ink(
-            width: iconSize + 20,
-            height: iconSize + 20,
+            width: iconSize,
+            height: iconSize,
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Icon(icon, size: iconSize, color: filled ? color : scheme.onSurface),
+                Icon(
+                  icon,
+                  size: iconSize,
+                  color: filled ? color : scheme.onSurface,
+                ),
                 if (badge)
                   Positioned(
-                    top: 8,
-                    right: 8,
+                    top: 4,
+                    right: 6,
                     child: Container(
                       width: 8,
                       height: 8,

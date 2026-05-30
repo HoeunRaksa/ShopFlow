@@ -19,6 +19,17 @@ class UserController extends AsyncNotifier<UserResponse?> {
     return await userService.getMe();
   }
 
+  Future<void> refreshUser() async {
+    state = const AsyncLoading();
+
+    try {
+      final user = await userService.getMe();
+      state = AsyncData(user);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
+  }
+
   Future<void> uploadImage(File file) async {
     final currentUser = state.value;
 

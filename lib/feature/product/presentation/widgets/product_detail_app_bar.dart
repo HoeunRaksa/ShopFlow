@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:newprovider/shared/app_bar_icon_button.dart';
 
+import '../../../../core/app_style.dart';
+import '../../../../shared/app_custom_appBar.dart';
 import '../../../user_profile/presentation/state/user_contoller.dart';
 
 class ProductDetailAppBar extends ConsumerWidget
@@ -10,12 +12,14 @@ class ProductDetailAppBar extends ConsumerWidget
   final AsyncValue productAsync;
   final int productId;
   final double iconSize;
+  final double height;
 
   const ProductDetailAppBar({
     super.key,
     required this.productAsync,
     required this.productId,
     required this.iconSize,
+    required this.height
   });
 
   @override
@@ -23,6 +27,7 @@ class ProductDetailAppBar extends ConsumerWidget
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final user = ref.watch(userControllerProvider).value;
+    final height = AppStyle.appBarHeight(context);
     return productAsync.when(
       loading: () => AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
@@ -38,34 +43,26 @@ class ProductDetailAppBar extends ConsumerWidget
         title: const Text("Error"),
       ),
 
-      data: (product) => AppBar(
-        backgroundColor:theme.scaffoldBackgroundColor,
-        elevation: 0,
-        iconTheme: IconThemeData(color: colorScheme.onSurface, size: iconSize),
-        title: Text(
-          product.name,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
-          ),
-        ),
+      data: (product) => AppCustomAppBar(
+        height: height,
+        title: product.name,
+        backgroundColor: theme.scaffoldBackgroundColor,
         actions: [
-          product.userId == user?.id
-              ? AppBarIconButton(
-            icon: Icons.edit_outlined,
-            iconSize: iconSize,
-            onPressed: () {
-              context.push(
-                '/product-management/$productId',
-              );
-            },
-          )
-              : const SizedBox.shrink(),
+          if (product.userId == user?.id)
+            AppBarIconButton(
+              icon: Icons.edit_outlined,
+              iconSize: iconSize,
+              onPressed: () {
+                context.push(
+                  '/product-management/$productId',
+                );
+              },
+            ),
         ],
       ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize =>  Size.fromHeight(height);
 }

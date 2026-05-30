@@ -28,6 +28,7 @@ class _ContactFormState extends ConsumerState<ContactForm> {
      _telegramCtrl = TextEditingController(text : widget.setContact.telegramLink ?? '');
      _phoneNumberCtrl = TextEditingController(text: widget.setContact.phoneNumber ?? '');
   }
+
   @override
   void dispose() {
     _facebookCtrl.dispose();
@@ -153,6 +154,7 @@ class _ContactFormState extends ConsumerState<ContactForm> {
                 onPressed: () async {
                   if (!_key.currentState!.validate()) return;
                   final message = await createContact(widget.setContact);
+                  ref.read(userControllerProvider.notifier).refreshUser();
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(message)),

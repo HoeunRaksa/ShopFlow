@@ -49,10 +49,6 @@ class _PasswordFormState extends ConsumerState<PasswordForm> {
             children: [
               // ── Header hint ──────────────────────────────────────
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primaryContainer.withValues(
                     alpha: 0.6,

@@ -16,10 +16,7 @@ class OwnerContentBody extends ConsumerWidget {
         productAsync.when(
           data: (products) {
             ref.read(ownerCounterProductControllerProvider.notifier).state = products.data.length;
-            return SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              sliver: ProductFindGrid(products: products.data),
-            );
+            return ProductFindGrid(products: products.data);
           },
           loading: () => const SliverFillRemaining(
             child: Center(child: CupertinoActivityIndicator()),

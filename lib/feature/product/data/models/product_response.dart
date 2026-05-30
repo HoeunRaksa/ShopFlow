@@ -42,4 +42,19 @@ class ProductResponse {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'stock': stock,
+      'imageUrl': imageUrl,
+      'isActive': isActive,
+      'categoryId': categoryId,
+      'categoryName': categoryName,
+      'userId': userId,
+    };
+  }
+
 }

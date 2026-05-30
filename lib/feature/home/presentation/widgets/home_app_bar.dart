@@ -4,7 +4,6 @@ import '../../../../shared/app_bar_icon_button.dart';
 import '../state/home_controller.dart';
 
 class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  final double padding;
   final double iconSize;
   final double titleSize;
   final double bodySize;
@@ -15,37 +14,39 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   const HomeAppBar({
     super.key,
-    required this.padding,
     required this.iconSize,
     required this.titleSize,
     required this.bodySize,
     required this.title,
     required this.onSearch,
     required this.onNotification,
-    this.height = 150
+     this.height = 40
   });
 
   @override
-  Size get preferredSize =>  Size.fromHeight(height);
+  Size get preferredSize => Size.fromHeight(height);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final bool isProductManagerForm =
-        ref.watch(appBarTitleProvider) == "Creation" || ref.watch(appBarTitleProvider) == "Upgrade" || ref.watch(appBarTitleProvider) == "Profile";
-
+        ref.watch(appBarTitleProvider) == "Creation" ||
+        ref.watch(appBarTitleProvider) == "Upgrade" ||
+        ref.watch(appBarTitleProvider) == "Profile" ||
+            ref.watch(appBarTitleProvider) == "Sell-history" ||
+        ref.watch(appBarTitleProvider) == "Order-history";
     return AppBar(
       backgroundColor: theme.scaffoldBackgroundColor,
 
       elevation: 0,
       scrolledUnderElevation: 1,
       shadowColor: Colors.black12,
-      titleSpacing: padding,
       automaticallyImplyLeading: false,
 
       title: Row(
         children: [
           Builder(
+
             builder: (ctx) => AppBarIconButton(
               icon: Icons.menu_rounded,
               iconSize: iconSize,
@@ -86,8 +87,6 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 onPressed: onNotification,
                 badge: true,
               ),
-
-              SizedBox(width: padding / 2),
             ]
           : null,
     );

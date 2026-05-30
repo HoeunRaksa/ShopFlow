@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:newprovider/feature/user_profile/presentation/state/user_contoller.dart';
 
 class HomeDrawerHeader extends ConsumerWidget {
@@ -61,28 +62,33 @@ class HomeDrawerHeader extends ConsumerWidget {
                     ],
                   ),
                 ),
-                child: CircleAvatar(
-                  radius: 38,
-                  backgroundColor: theme.colorScheme.surface,
-                  child: ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: imageProvider,
-                      width: 72,
-                      height: 72,
-                      fit: BoxFit.cover,
-                      placeholder: (_, __) => const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                      errorWidget: (_, __, ___) => Icon(
-                        Icons.person_rounded,
-                        size: 36,
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
+                child: InkWell(
+                    onTap: (){
+                          context.push("/profile", extra: user);
+                    },
+                     child: CircleAvatar(
+                       radius: 38,
+                       backgroundColor: theme.colorScheme.surface,
+                       child: ClipOval(
+                         child: CachedNetworkImage(
+                           imageUrl: imageProvider,
+                           width: 72,
+                           height: 72,
+                           fit: BoxFit.cover,
+                           placeholder: (_, __) => const SizedBox(
+                             width: 22,
+                             height: 22,
+                             child: CircularProgressIndicator(strokeWidth: 2),
+                           ),
+                           errorWidget: (_, __, ___) => Icon(
+                             Icons.person_rounded,
+                             size: 36,
+                             color: theme.colorScheme.primary,
+                           ),
+                         ),
+                       ),
+                     ),
+                )
               ),
 
               const SizedBox(width: 14),

@@ -16,7 +16,7 @@ class AppStyle {
     final w = MediaQuery.of(context).size.width;
     final h = height ?? screenHeight(context);
 
-    // ✅ Phone
+
     if (w < 600) {
       if (h < 700) return h * 0.21;
       if (h < 900) return h * 0.22;
@@ -57,7 +57,7 @@ class AppStyle {
       ]) {
     final w = width ?? screenWidth(context);
 
-    return (w / 220).floor().clamp(1, 6);
+    return (w / 208).floor().clamp(1, 6);
   }
 
   static double maxWidth(BuildContext context) {
@@ -263,4 +263,45 @@ class AppStyle {
     }
     return 64;
   }
+
+  static double appBarHeight(BuildContext context, [double? width]) {
+    final w = width ?? screenWidth(context);
+
+    if (w < 600) {
+      return 60;
+    }
+
+    if (w < 1024) {
+      return 50;
+    }
+
+    return 65;
+  }
+
+  static double longTextWidth(BuildContext context, [double? width]){
+    final w = width ?? screenWidth(context);
+    if (w < 600) {
+      return w * 0.80;
+    }
+
+    if (w < 1024) {
+      return w * 0.80;
+    }
+
+    return w * 0.80;
+  }
+
+  static double imageSize(BuildContext context, [double? width]){
+    final w = width ?? screenWidth(context);
+    if (w < 600) {
+      return w * 0.25;
+    }
+
+    if (w < 1024) {
+      return w * 0.20;
+    }
+
+    return w * 0.15;
+  }
+
 }

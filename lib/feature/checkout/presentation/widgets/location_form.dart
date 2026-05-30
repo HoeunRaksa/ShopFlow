@@ -35,6 +35,7 @@ class _LocationFormState extends ConsumerState<LocationForm> {
     _deliveryNoteCtrl.dispose();
     super.dispose();
   }
+
   Future<void> _submitNewLocation() async {
     if (_isSubmitting) return;
     if (!_key.currentState!.validate()) return;
@@ -54,9 +55,8 @@ class _LocationFormState extends ConsumerState<LocationForm> {
           .checkout(null, request);
 
       if (!mounted) return;
-      if (result?.data?.paymentId != null) {
-        _showPaymentCountdownDialog();
-      } else {
+
+      if (result?.data?.paymentId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(result?.message ?? "Something went wrong")),
         );
@@ -65,18 +65,22 @@ class _LocationFormState extends ConsumerState<LocationForm> {
       if (mounted) setState(() => _isSubmitting = false);
     }
   }
+
   Future<void> _checkoutExistingLocation(int selectedLocationId) async {
     if (_isSubmitting) return;
+
     setState(() => _isSubmitting = true);
+
     try {
       final result = await ref
           .read(checkoutProvider.notifier)
           .checkout(selectedLocationId, null);
+
       if (!mounted) return;
+
       debugPrint("Payment Id: ${result?.data}");
-      if (result?.data?.paymentId != null) {
-        _showPaymentCountdownDialog();
-      } else {
+
+      if (result?.data?.paymentId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(result?.message ?? "Checkout failed")),
         );
@@ -86,8 +90,11 @@ class _LocationFormState extends ConsumerState<LocationForm> {
     }
   }
 
-  void _showPaymentCountdownDialog() {
+  void _showPaymentCountdownDialog({
+    required Future<void> Function() onConfirmAction,
+  }) {
     if (_isCountdownDialogOpen) return;
+
     _isCountdownDialogOpen = true;
 
     showGeneralDialog(
@@ -96,49 +103,43 @@ class _LocationFormState extends ConsumerState<LocationForm> {
       barrierLabel: "",
       barrierColor: Colors.black.withOpacity(0.6),
       transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        void closeDialog() {
+          Navigator.of(dialogContext, rootNavigator: true).pop();
 
-      pageBuilder: (context, animation, secondaryAnimation) {
+          if (mounted) {
+            setState(() {
+              _isCountdownDialogOpen = false;
+            });
+          }
+        }
+
         return Align(
           alignment: Alignment.bottomCenter,
           child: PaymentCountdownDialog(
-            onDismissed: () {
-              if (mounted) {
-                setState(() {
-                  _isCountdownDialogOpen = false;
-                });
-              }
+            onDismissed: closeDialog,
+            onConfirm: () async {
+              closeDialog();
+              await onConfirmAction();
             },
           ),
         );
       },
-
       transitionBuilder: (context, animation, secondaryAnimation, child) {
-        final slideAnimation = Tween<Offset>(
-          begin: const Offset(0, 1),
-          end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutCubic,
-          ),
+        final slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(
+          CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
         );
-        final fadeAnimation = Tween<double>(
-          begin: 0.0,
-          end: 1.0,
-        ).animate(
+
+        final fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(
             parent: animation,
             curve: const Interval(0.0, 0.6, curve: Curves.easeIn),
           ),
         );
-        final scaleAnimation = Tween<double>(
-          begin: 0.95,
-          end: 1.0,
-        ).animate(
-          CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutCubic,
-          ),
+
+        final scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+          CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
         );
 
         return FadeTransition(
@@ -173,24 +174,27 @@ class _LocationFormState extends ConsumerState<LocationForm> {
 
     final isLoading =
         checkoutState.isLoading || _isSubmitting || countdown != null;
-    ref.listen<ResultMessage<String>?>(
-      paymentCallbackResultProvider,
-          (previous, next) {
-        if (!mounted || next == null) return;
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(next.message),
-              duration: const Duration(seconds: 15),
-            ),
-          );
-        Future.delayed(const Duration(seconds: 15), () {
-          if (!mounted) return;
-          Navigator.of(context).popUntil((route) => route.isFirst);
-        });
-      },
-    );
+
+    ref.listen<ResultMessage<String>?>(paymentCallbackResultProvider, (
+        previous,
+        next,
+        ) {
+      if (!mounted || next == null) return;
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(next.message),
+            duration: const Duration(seconds: 15),
+          ),
+        );
+
+      Future.delayed(const Duration(seconds: 15), () {
+        if (!mounted) return;
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      });
+    });
 
     return Form(
       key: _key,
@@ -213,9 +217,8 @@ class _LocationFormState extends ConsumerState<LocationForm> {
                       ? null
                       : () {
                     ref.read(isSelectedProvider.notifier).state = false;
-                    ref
-                        .read(selectedLocationIdProvider.notifier)
-                        .state = null;
+                    ref.read(selectedLocationIdProvider.notifier).state =
+                    null;
                   },
                 ),
                 AppButton(
@@ -236,22 +239,24 @@ class _LocationFormState extends ConsumerState<LocationForm> {
           ),
           if (!isSelected) ...[
             Container(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: theme.colorScheme.primaryContainer
-                    .withValues(alpha: 0.6),
+                color: theme.colorScheme.primaryContainer.withValues(
+                  alpha: 0.6,
+                ),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color:
-                  theme.colorScheme.primary.withValues(alpha: 0.2),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.2),
                   width: 0.5,
                 ),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.location_on_outlined,
-                      size: 16, color: theme.colorScheme.primary),
+                  Icon(
+                    Icons.location_on_outlined,
+                    size: 16,
+                    color: theme.colorScheme.primary,
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
@@ -266,9 +271,7 @@ class _LocationFormState extends ConsumerState<LocationForm> {
                 ],
               ),
             ),
-
             const SizedBox(height: 24),
-
             AppTextField(
               label: 'Receiver Name',
               hint: 'Enter receiver name',
@@ -312,9 +315,7 @@ class _LocationFormState extends ConsumerState<LocationForm> {
               prefixIcon: const Icon(Icons.note_alt_outlined),
               textInputAction: TextInputAction.done,
             ),
-
             const SizedBox(height: 36),
-
             AppButton(
               isFullWidth: true,
               isRounded: true,
@@ -328,22 +329,29 @@ class _LocationFormState extends ConsumerState<LocationForm> {
                   color: theme.colorScheme.onPrimary,
                 ),
               )
-                  : Icon(Icons.check_rounded,
-                  size: iconSize, color: theme.colorScheme.onPrimary),
-              onPressed: isLoading ? null : _submitNewLocation,
+                  : Icon(
+                Icons.check_rounded,
+                size: iconSize,
+                color: theme.colorScheme.onPrimary,
+              ),
+              onPressed: isLoading
+                  ? null
+                  : () {
+                if (!_key.currentState!.validate()) return;
+
+                _showPaymentCountdownDialog(
+                  onConfirmAction: _submitNewLocation,
+                );
+              },
             ),
-
             const SizedBox(height: 12),
-
             AppButton(
               isFullWidth: true,
               isRounded: true,
               label: 'Cancel',
               style: AppButtonStyle.text,
-              onPressed:
-              isLoading ? null : () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).pop(),
             ),
-
             const SizedBox(height: 32),
           ],
           if (isSelected) ...[
@@ -371,19 +379,15 @@ class _LocationFormState extends ConsumerState<LocationForm> {
                   onChanged: isLoading
                       ? null
                       : (value) {
-                    ref
-                        .read(selectedLocationIdProvider.notifier)
-                        .state = value;
+                    ref.read(selectedLocationIdProvider.notifier).state =
+                        value;
                   },
                 );
               },
-              loading: () =>
-              const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, s) => Text(e.toString()),
             ),
-
             const SizedBox(height: 40),
-
             AppButton(
               isFullWidth: true,
               isRounded: true,
@@ -397,15 +401,17 @@ class _LocationFormState extends ConsumerState<LocationForm> {
                   color: theme.colorScheme.onPrimary,
                 ),
               )
-                  : Icon(Icons.check_rounded,
-                  size: iconSize, color: theme.colorScheme.onPrimary),
+                  : Icon(
+                Icons.check_rounded,
+                size: iconSize,
+                color: theme.colorScheme.onPrimary,
+              ),
               onPressed: isLoading
                   ? null
                   : () {
                 final locationsValue = locations.value;
 
-                if (locationsValue == null ||
-                    locationsValue.isEmpty) {
+                if (locationsValue == null || locationsValue.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("No saved location found"),
@@ -418,7 +424,10 @@ class _LocationFormState extends ConsumerState<LocationForm> {
                     ref.read(selectedLocationIdProvider) ??
                         locationsValue.first.id;
 
-                _checkoutExistingLocation(selectedLocationId);
+                _showPaymentCountdownDialog(
+                  onConfirmAction: () =>
+                      _checkoutExistingLocation(selectedLocationId),
+                );
               },
             ),
           ],

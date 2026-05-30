@@ -15,7 +15,8 @@ class PlanCard extends StatelessWidget {
   final bool isHighlighted;
   final VoidCallback onTap;
 
-  const PlanCard({super.key,
+  const PlanCard({
+    super.key,
     required this.title,
     required this.price,
     required this.description,
@@ -32,53 +33,34 @@ class PlanCard extends StatelessWidget {
     final w = AppStyle.screenWidth(context);
 
     return Container(
-      padding:
-      EdgeInsets.all(AppStyle.padding(context,w)),
+      padding: EdgeInsets.all(AppStyle.padding(context, w)),
 
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
 
-        borderRadius:
-        BorderRadius.circular(
-            AppStyle.cardRadius(context,w)
-        ),
+        borderRadius: BorderRadius.circular(AppStyle.cardRadius(context, w)),
 
-        border: Border.all(
-          color:
-          theme.colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: theme.colorScheme.primary.withAlpha(50)),
       ),
 
       child: Column(
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
 
         children: [
+          if (isHighlighted) const RecommendedBadge(),
 
-          if (isHighlighted)
-            const RecommendedBadge(),
-
-          PlanTitle(
-            title: title,
-            price: price,
-          ),
+          PlanTitle(title: title, price: price),
 
           const SizedBox(height: 8),
 
           Text(
             description,
-            style: TextStyle(
-              color: theme.colorScheme
-                  .onSurfaceVariant,
-            ),
+            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
           ),
 
           const SizedBox(height: 12),
 
-          ...features.map(
-                (e) =>
-                FeatureItem(text: e),
-          ),
+          ...features.map((e) => FeatureItem(text: e)),
 
           const SizedBox(height: 12),
 
@@ -86,13 +68,11 @@ class PlanCard extends StatelessWidget {
             width: double.infinity,
 
             child: ElevatedButton(
-              onPressed:
-              isCurrent ? null : onTap,
+              onPressed: isCurrent ? null : onTap,
 
-              child:
-              Text(buttonText),
+              child: Text(buttonText),
             ),
-          )
+          ),
         ],
       ),
     );

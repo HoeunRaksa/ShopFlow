@@ -35,7 +35,6 @@ class _OwnerRowTitleState extends State<OwnerRowTitle> {
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: padding,
         vertical: padding * 0.5,
       ),
       child: AnimatedScale(

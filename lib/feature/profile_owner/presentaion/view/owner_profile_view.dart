@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:newprovider/shared/app_bar_icon_button.dart';
-
+import 'package:newprovider/shared/app_custom_appBar.dart';
+import '../../../../core/app_style.dart';
+import '../../../../shared/app_scaffold.dart';
 import '../state/user_owner_controller.dart';
 import '../widgets/owner_profile_body.dart';
 
@@ -13,18 +15,15 @@ class OwnerProfileView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userAsync = ref.watch(userOwnerProvider(userId));
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
+    final height = AppStyle.appBarHeight(context);
+    return AppScaffold(
+      appBar: AppCustomAppBar(
+        height: height,
         backgroundColor: theme.scaffoldBackgroundColor,
-        automaticallyImplyActions: true,
-        leading: AppBarIconButton(
-
-          icon: Icons.arrow_back,
-          iconSize: 20,
-          onPressed: () {
-            ref.read(ownerPushVerificationControllerProvider.notifier).state = true;
-            context.pop();},
-        ),
+         onBack: (){
+           ref.read(ownerPushVerificationControllerProvider.notifier).state = true;
+           context.pop();},
+          title: 'Profile owner',
       ),
       body: SingleChildScrollView(
         child: userAsync.when(

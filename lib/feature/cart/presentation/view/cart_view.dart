@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:newprovider/feature/cart/presentation/state/cart_contoller.dart';
 import '../../../../../core/app_style.dart';
 import '../../../../core/utils/helper_image.dart';
+import '../../../../shared/app_scaffold.dart';
 import '../widgets/cart_empty_state.dart';
 import '../widgets/cart_item.dart';
 import '../widgets/cart_summary.dart';
@@ -34,12 +35,11 @@ class CartView extends ConsumerWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth;
-        final padding = AppStyle.padding(context, w);
-
         return cartAsync.when(
           data: (carts) {
-            return Scaffold(
+            return AppScaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              usePadding: false,
               bottomNavigationBar: carts.isEmpty
                   ? null
                   : CartSummary(
@@ -54,18 +54,14 @@ class CartView extends ConsumerWidget {
                         parent: AlwaysScrollableScrollPhysics(),
                       ),
                       slivers: [
-                        SliverPadding(
-                          padding: EdgeInsets.fromLTRB(padding, 16, padding, 0),
-                          sliver: SliverList(
+                        SliverList(
                             delegate: SliverChildBuilderDelegate((context, index) {
                               final item = carts[index];
                               final String image = HelperImage.buildImageUrl(
                                 item.product.imageUrl,
                               );
                               return CartItem(
-                                name: item.product.name,
-                                imageUrl: image,
-                                price: item.product.price,
+                               product: item.product,
                                 quantity: item.quantity,
                                 onIncrement: () =>
                                     onIncrement(item.product.id, item.id),
@@ -75,7 +71,7 @@ class CartView extends ConsumerWidget {
                               );
                             }, childCount: carts.length),
                           ),
-                        ),
+
                         SliverToBoxAdapter(
                             child: SizedBox(
                                 height: AppStyle.bottomSpace(context, w))),

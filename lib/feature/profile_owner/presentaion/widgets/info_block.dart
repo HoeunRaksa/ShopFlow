@@ -16,19 +16,36 @@ class InfoBlock extends ConsumerWidget {
     final s = 1.0 - strength;
     const r = 0.2126, g = 0.7152, b = 0.0722;
     return ColorFilter.matrix([
-      r + s * (1 - r), g * (1 - s),     b * (1 - s),     0, 0,
-      r * (1 - s),     g + s * (1 - g), b * (1 - s),     0, 0,
-      r * (1 - s),     g * (1 - s),     b + s * (1 - b), 0, 0,
-      0,               0,               0,               1, 0,
+      r + s * (1 - r),
+      g * (1 - s),
+      b * (1 - s),
+      0,
+      0,
+      r * (1 - s),
+      g + s * (1 - g),
+      b * (1 - s),
+      0,
+      0,
+      r * (1 - s),
+      g * (1 - s),
+      b + s * (1 - b),
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
     ]);
   }
+
   static ({double desat, double dim}) _weights(AppThemeType type) {
     return switch (type) {
-      AppThemeType.light    => (desat: 0.60, dim: 0.72),
-      AppThemeType.forest   => (desat: 0.55, dim: 0.70),
-      AppThemeType.dark     => (desat: 0.45, dim: 0.55),
+      AppThemeType.light => (desat: 0.60, dim: 0.72),
+      AppThemeType.forest => (desat: 0.55, dim: 0.70),
+      AppThemeType.dark => (desat: 0.45, dim: 0.55),
       AppThemeType.midnight => (desat: 0.40, dim: 0.50),
-      AppThemeType.system   => (desat: 0.50, dim: 0.62),
+      AppThemeType.system => (desat: 0.50, dim: 0.62),
     };
   }
 
@@ -46,9 +63,7 @@ class InfoBlock extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: padding),
-          child: Row(
+       Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
@@ -85,7 +100,7 @@ class InfoBlock extends ConsumerWidget {
               ),
             ],
           ),
-        ),
+
         IgnorePointer(
           child: Opacity(
             opacity: weights.dim,
